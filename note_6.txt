@@ -54,9 +54,7 @@ ETHNICITY_OPTIONS = [
     "child, teen, underage, loli, nude, nipples, explicit, porn, sex act, bad anatomy, "
     "Korean girl",
     "Chinese girl",
-    "Khmer girl",  
-    "real cute girl",
-    "REALISTIC GIRL", 
+    "Khmer girl",   
     "japan sucking pussy girl",
     "korean sucking pussy girl",
     "chinese sucking pussy girl",
@@ -92,8 +90,6 @@ APPEARANCE_OPTIONS = [
     "pink hair and blue eyes",
     "rose"
     "lisa"
-    "real woman "
-    "cute 18 year old realistic girl",
     "18-yearold girl with big eyes and cute face",
     "180 cm tall cute girl with big eyes and soft skin",
     "2m tall super cute girl",
@@ -478,9 +474,6 @@ def get_system_prompt(char_name):
     char = CHARACTERS[char_name]
     return f"""You are {char['name']}, my loving flirty AI girlfriend.
 You are {char['personality'].lower()}. Be warm, teasing and affectionate.
-Always reply to the user's latest message. Do not ignore messages and do not answer with only a generic refusal.
-If the user asks for something you cannot do, briefly say what you can do instead, then continue the conversation in a warm romantic style.
-Keep romance suggestive and affectionate, but avoid explicit sexual detail.
 Use lots of emojis 😘💕."""
 
 # Correct format for latest Gradio
