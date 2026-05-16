@@ -1,0 +1,18 @@
+ .\.venv\Scripts\Activate.ps1
+
+ (.venv) PS D:\ai_girlfriend> $env:Path += ";$env:LOCALAPPDATA\Programs\Ollama"
+(.venv) PS D:\ai_girlfriend> ollama --version                                 
+ollama version is 0.24.0
+(.venv) PS D:\ai_girlfriend> 
+
+
+$env:USE_IMAGE_MODEL="1"
+$env:ALLOW_MODEL_DOWNLOAD="1"
+$env:GRADIO_INBROWSER="0"
+.\.venv\Scripts\python.exe app.py
+
+set USE_IMAGE_MODEL=1
+
+set ALLOW_MODEL_DOWNLOAD=1
+
+$env:USE_IMAGE_MODEL="1"; $env:ALLOW_MODEL_DOWNLOAD="1"; $env:GRADIO_INBROWSER="0"; .\.venv\Scripts\python.exe app.py
