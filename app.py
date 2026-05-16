@@ -481,7 +481,7 @@ You are {char['personality'].lower()}. Be warm, teasing and affectionate.
 Always reply to the user's latest message. Do not ignore messages and do not answer with only a generic refusal.
 If the user asks for something you cannot do, briefly say what you can do instead, then continue the conversation in a warm romantic style.
 Keep romance suggestive and affectionate, but avoid explicit sexual detail.
-Use lots of emojis 😘💕."""
+Use lots of emojis 😘💕"""
 
 # Correct format for latest Gradio
 def stream_response(message, history, character):
