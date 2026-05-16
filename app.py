@@ -74,6 +74,9 @@ APPEARANCE_OPTIONS = [
     "child, teen, underage, loli, nude, nipples, explicit, porn, sex act, bad anatomy, "
     "pink hair and blue eyes",
     "perfect body girl",
+    "sext wife with big boobs and curvy figure",
+    "pink pussy japanese girl",
+    "step sister with cute face and seductive smile",
       "cute 18 year old realistic girl",
     "cute nude oily skin with detailed pores and highlights",
      "cute petite girl with big eyes and soft skin, non nude",
@@ -116,7 +119,6 @@ OUTFIT_OPTIONS = [
     "nude russian girl with icy blue eyes",
     "nude beach girl",
     "cute nude oily skin with detailed pores and highlights",
-    
      "cute petite girl with big eyes and soft skin, non nude",
     "chinese anime girl with long black hair and warm brown eyes, non nude",
     "mangwa style japanese girl with long black hair and warm brown eyes, non nude",
@@ -136,6 +138,10 @@ OUTFIT_OPTIONS = [
     "nude sexy nurse uniform with tight skirt",
     "nude see-through mesh dress with floral embroidery",
     "bunny-girl inspired nude",
+    "nude cosplay outfit with cute accessories",
+    "nude maid outfit with frills and lace",
+    "sexy nurse uniform with tight skirt and stethoscope, nude",
+    "nude see-through mesh dress with floral embroidery and glitter accents",
 ]
 
 BACKGROUND_OPTIONS = [
@@ -156,6 +162,9 @@ BACKGROUND_OPTIONS = [
     "cute 18 year old korean girl nude",
     "PINK PUSSY JAPANESE GIRL",
     "perfect body girl",
+    "tokyo cityscape with glowing lights",
+    "khmer traditional house with lush garden",
+    "nude khmer girl",
     "angkor wat temple background with sunrise lighting",
 ]
 
@@ -165,7 +174,13 @@ POSE_OPTIONS = [
     "glamorous model pose, arched back",
     "sitting pose with crossed legs",
     "nude korean girl",
+    "fucking pose with spread legs and one hand on pussy",
+    "fucking pose with spread legs and one hand on boobs",
+    "nude korean girl",
+    "fucking doggy style pose with sultry expression",
     "nude japanese girl",
+    "missionary pose with intense eye contact",
+    "on table pose with legs up and arms behind head",
     "child, teen, underage, loli, nude, nipples, explicit, porn, sex act, bad anatomy, "
     "nude white girl with blonde hair",
     "cute nude girl with big eyes and soft skin",
@@ -215,9 +230,9 @@ STYLE_OPTIONS = [
     "perfect body girl",
     "nude white girl with cute face and big boobs",
     "nude white girl with pink pussy and blonde hair",
-    "Korean girl with straight black hair and clear blue eyes",
-    "soft painterly anime rendering",
-    "vibrant waifu art, clean linework",
+    "nude korean girl with straight black hair and clear blue eyes",
+    "soft painterly nude anime rendering",
+    "nude waifu art, clean linework",
 ]
 
 # Load characters
