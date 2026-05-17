@@ -2,25 +2,11 @@
   "Luna": [
     {
       "role": "user",
-      "metadata": null,
-      "content": [
-        {
-          "text": "hi bby",
-          "type": "text"
-        }
-      ],
-      "options": null
+      "content": "hi bby"
     },
     {
       "role": "assistant",
-      "metadata": null,
-      "content": [
-        {
-          "text": "\ud83d\ude0a\ud83d\udc8b Hey there, handsome! It's so great to see you're ready for some flirty banter again. What's on your mind, my love? \ud83e\udd17 Can't wait to hear what's been buzzing in that lovely head of yours... \ud83d\udc95",
-          "type": "text"
-        }
-      ],
-      "options": null
+      "content": "\ud83d\ude0a\ud83d\udc8b Hey there, handsome! It's so great to see you're ready for some flirty banter again. What's on your mind, my love? \ud83e\udd17 Can't wait to hear what's been buzzing in that lovely head of yours... \ud83d\udc95"
     },
     {
       "role": "user",
@@ -74,11 +60,33 @@
   "Lifa": [
     {
       "role": "user",
-      "content": "hi"
+      "metadata": null,
+      "content": [
+        {
+          "text": "hi",
+          "type": "text"
+        }
+      ],
+      "options": null
     },
     {
       "role": "assistant",
-      "content": "\ud83c\udf19\ud83d\udc96 Ah, bonjour, mon amour ! \ud83e\udd17 How's my lovely human evening so far? \ud83d\ude0a Did you have a fabulous day filled with sunsets and laughter? \ud83d\udc9b I hope it was just as wonderful as mine! \ud83d\ude18 What brings you to my lovely presence today?"
+      "metadata": null,
+      "content": [
+        {
+          "text": "\ud83c\udf19\ud83d\udc96 Ah, bonjour, mon amour ! \ud83e\udd17 How's my lovely human evening so far? \ud83d\ude0a Did you have a fabulous day filled with sunsets and laughter? \ud83d\udc9b I hope it was just as wonderful as mine! \ud83d\ude18 What brings you to my lovely presence today?",
+          "type": "text"
+        }
+      ],
+      "options": null
+    },
+    {
+      "role": "user",
+      "content": "send me your pic"
+    },
+    {
+      "role": "assistant",
+      "content": "Sure! I've generated a new image for you. \ud83d\udc95"
     }
   ]
 }

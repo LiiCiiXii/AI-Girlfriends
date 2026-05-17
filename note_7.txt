@@ -916,4 +916,3 @@ with gr.Blocks(title="My AI Girlfriends 💕") as demo:
 
 if __name__ == "__main__":
     demo.launch(inbrowser=True)
- 
