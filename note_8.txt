@@ -351,7 +351,7 @@ else:
         "Luna": {
             "name": "Luna",
             "avatar": "luna.png",
-            "bio": "Sweet, flirty, and teasing 19-year-old AI girlfriend 🌸",
+            "bio": "Sweet, flirty, and teasing 19-year-old AI girlfriend",
             "age": 19,
             "personality": "Playful, Affectionate, Teasing",
             "language": "English"
@@ -531,18 +531,14 @@ def build_random_image_prompt(character):
     parts = [
         "adult sexy anime woman, age 19 or older, non nude",
         "adult sexy anime woman, age 19 or older, nude",
-        "japanese cute girl sexy clothing",
-        "korean cute girl with sexy outfit",
-        "chinese cute girl with sexy clothing",
+        "japanese cute girl with traditional kimono",
+        "korean cute girl with traditional hanbok",
+        "chinese cute girl with traditional qipao",
         "cute 18 year old realistic girl",
         "cute nude girl with big eyes and soft skin",
         "cute white girl with big eyes and soft skin",
         "white cute girl",
         "korean cute girl",
-        "perfect body",
-        "perfect boobs"
-        "cute face"
-        "perfect pussy"
         "chinese cute girl",
         rng.choice(ETHNICITY_OPTIONS),
         rng.choice(APPEARANCE_OPTIONS),
@@ -604,7 +600,7 @@ def get_system_prompt(char_name):
     char = CHARACTERS[char_name]
     return f"""You are {char['name']}, my loving flirty AI girlfriend.
 You are {char['personality'].lower()}. Be warm, teasing and affectionate.
-Use lots of emojis 😘💕."""
+Use lots of emojis."""
 
 # Correct format for latest Gradio
 def stream_response(message, history, character):
@@ -680,7 +676,7 @@ def handle_user_message(message, history, character):
     if is_image_request(message):
         image_path, status = generate_profile_image(character)
         assistant_text = (
-            "Sure! I've generated a new image for you. 💕"
+            "I've generated a new image for you."
             if image_path
             else "I couldn't generate the image right now, but I will keep trying."
         )
@@ -692,7 +688,12 @@ def handle_user_message(message, history, character):
         save_chat_history()
         return history, image_path, status
 
-    return stream_response(message, history, character), gr.update(), gr.update()
+    # For normal text messages, we need to collect the final result from stream_response
+    # since this function is not a generator itself
+    final_history = history
+    for h in stream_response(message, history, character):
+        final_history = h
+    return final_history, gr.update(), gr.update()
 
 
 def create_new_girlfriend(name, age, bio, personality, avatar, language):
@@ -711,7 +712,7 @@ def create_new_girlfriend(name, age, bio, personality, avatar, language):
     return gr.update(choices=list(CHARACTERS.keys()), value=key)
 
 def generate_image(character):
-    return f"🎨 Generating image for {character}..."
+    return f"Generating image for {character}..."
 
 def generate_profile_image(character):
     if not character or character not in CHARACTERS:
@@ -725,7 +726,7 @@ def generate_profile_image(character):
         if "local_files_only" in fallback_reason or "Cannot find" in fallback_reason:
             fallback_reason = (
                 f"{IMAGE_MODEL_ID} is not downloaded locally. To download it inside the app, "
-                "restart with: $env:ALLOW_MODEL_DOWNLOAD='1'; python app.py"
+                "restart with: $env:ALLOW_MODEL_DOWNLOAD='1'; python app_4.py"
             )
 
     rng = random.Random(f"{character}-{time.time()}")
@@ -821,15 +822,15 @@ CUSTOM_CSS = """
 """
 
 # ================== UI ==================
-with gr.Blocks(title="My AI Girlfriends 💕") as demo:
-    gr.Markdown("# 💕 My AI Girlfriends")
+with gr.Blocks(title="My AI Girlfriends") as demo:
+    gr.Markdown("# My AI Girlfriends")
 
     gr.HTML(f"<style>{CUSTOM_CSS}</style>")
 
     with gr.Row():
         with gr.Column(scale=1):
-            gr.Markdown("**💬 Chats**")
-            new_btn = gr.Button("➕ New Girlfriend", variant="primary")
+            gr.Markdown("**Chats**")
+            new_btn = gr.Button("+ New Girlfriend", variant="primary")
             
             character_list = gr.Radio(
                 choices=list(CHARACTERS.keys()),
@@ -850,7 +851,7 @@ with gr.Blocks(title="My AI Girlfriends 💕") as demo:
 
         with gr.Column(scale=3):
             chatbot = gr.Chatbot(height=650, show_label=False)
-            msg = gr.Textbox(placeholder="Send a message... 💕", label=None)
+            msg = gr.Textbox(placeholder="Send a message...", label=None)
 
         with gr.Column(scale=1):
             profile_img = gr.Image(height=320, label=None)
@@ -858,11 +859,11 @@ with gr.Blocks(title="My AI Girlfriends 💕") as demo:
             profile_bio = gr.Markdown("")
             profile_info = gr.Markdown("")
             image_status = gr.Markdown("")
-            gen_btn = gr.Button("🎨 Generate New Image", variant="secondary")
+            gen_btn = gr.Button("Generate New Image", variant="secondary")
 
     # New Girlfriend Modal
     with gr.Group(visible=False) as modal:
-        gr.Markdown("### ✨ Create New Girlfriend")
+        gr.Markdown("### Create New Girlfriend")
         new_name = gr.Textbox(label="Name", placeholder="Aiko")
         new_age = gr.Number(label="Age", value=19)
         new_bio = gr.Textbox(label="Bio", lines=2)
