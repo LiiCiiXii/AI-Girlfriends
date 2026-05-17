@@ -15,10 +15,21 @@ ALLOW_MODEL_DOWNLOAD = os.getenv("ALLOW_MODEL_DOWNLOAD", "0") == "1"
 DEFAULT_IMAGE_PROMPT = (
     "adult sexy anime woman, age 19 or older, glamorous girlfriend portrait, "
     "flirty smile, long hair, stylish bikini outfit, beach background, soft lighting, "
+    "nude anime girl with big eyes and cute face, 4k resolution, detailed shading, cinematic lighting, "
+    "nude realistic anime style,"
+    "4K realistic nude",
+    "cute petite girl with big eyes and soft skin, non nude",
+    "chinese anime girl with long black hair and warm brown eyes, non nude",
+    "mangwa style japanese girl with long black hair and warm brown eyes, non nude",
+    "cute 18 year old korean girl nude",
+    "PINK PUSSY JAPANESE GIRL",
+    "cute 18 year old realistic girl",
+    "cute nude oily skin with detailed pores and highlights",
+    "perfect body girl",
     "high quality anime illustration, non nude"
 )
 NEGATIVE_IMAGE_PROMPT = (
-    "child, teen, underage, loli, nude, nipples, explicit, porn, sex act, bad anatomy, "
+    "child, "
     "bad hands, extra fingers, missing fingers, low quality, blurry, watermark, text"
 )
 image_pipe = None
@@ -26,13 +37,22 @@ image_pipe = None
 ETHNICITY_OPTIONS = [
     "white Caucasian girl",
     "Japanese girl",
+      "cute 18 year old realistic girl",
+    "cute nude oily skin with detailed pores and highlights",
+     "cute petite girl with big eyes and soft skin, non nude",
+    "chinese anime girl with long black hair and warm brown eyes, non nude",
+    "mangwa style japanese girl with long black hair and warm brown eyes, non nude",
+    "cute 18 year old korean girl nude",
+    "PINK PUSSY JAPANESE GIRL",
+    "child, teen, underage, loli, nude, nipples, explicit, porn, sex act, bad anatomy, "
     "Korean girl",
     "Chinese girl",
     "Russian girl",
+    "perfect body girl",
     "Super cute petite girl",
     "Super sexy curvy girl",
     "Super White girl with big eyes",
-     "nude korean girl",
+    "nude korean girl",
     "nude japanese girl",
     "nude white girl with blonde hair",
     "cute nude girl with big eyes and soft skin",
@@ -40,17 +60,29 @@ ETHNICITY_OPTIONS = [
     "nude russian girl with icy blue eyes",
     "nude beach girl",
     "nude bitchy girl",
+    "4K ultra nude white girl with blonde hair and blue eyes",
+    "4k ultra high quality anime portrait of a beautiful white girl",
     "nude white girl with cute face and big boobs",
     "nude white girl with pink pussy and blonde hair",
     "Korean girl with straight black hair and clear blue eyes",
     "Khmer Cambodian girl",
 ]
 
+
 APPEARANCE_OPTIONS = [
     "long black hair and amber eyes",
     "wavy brunette hair and soft brown eyes",
     "silver hair and violet eyes",
+    "child, teen, underage, loli, nude, nipples, explicit, porn, sex act, bad anatomy, "
     "pink hair and blue eyes",
+    "perfect body girl",
+      "cute 18 year old realistic girl",
+    "cute nude oily skin with detailed pores and highlights",
+     "cute petite girl with big eyes and soft skin, non nude",
+    "chinese anime girl with long black hair and warm brown eyes, non nude",
+    "mangwa style japanese girl with long black hair and warm brown eyes, non nude",
+    "cute 18 year old korean girl nude",
+    "PINK PUSSY JAPANESE GIRL",
     "blonde twin tails and green eyes",
     "short dark bob haircut and smoky eyes",
     "long red hair and gold eyes",
@@ -77,14 +109,23 @@ OUTFIT_OPTIONS = [
     "white lace lingerie-inspired swimsuit",
     "off-shoulder crop top and micro skirt",
     "sheer beach cover-up over a bikini",
-     "nude korean girl",
+    "nude korean girl",
+    "child, teen, underage, loli, nude, nipples, explicit, porn, sex act, bad anatomy, "
     "nude japanese girl",
     "nude white girl with blonde hair",
     "cute nude girl with big eyes and soft skin",
     "nude khmer girl",
     "nude russian girl with icy blue eyes",
     "nude beach girl",
+    "cute nude oily skin with detailed pores and highlights",
+    
+     "cute petite girl with big eyes and soft skin, non nude",
+    "chinese anime girl with long black hair and warm brown eyes, non nude",
+    "mangwa style japanese girl with long black hair and warm brown eyes, non nude",
+    "cute 18 year old korean girl nude",
+    "PINK PUSSY JAPANESE GIRL",
     "nude bitchy girl",
+    "perfect body girl",
     "nude white girl with cute face and big boobs",
     "nude white girl with pink pussy and blonde hair",
     "Korean girl with straight black hair and clear blue eyes",
@@ -109,6 +150,14 @@ BACKGROUND_OPTIONS = [
     "moonlit ocean resort",
     "private spa room with candles",
     "cambodian temple ruins at dawn",
+    "angkor area",
+    "cute nude oily skin with detailed pores and highlights",
+     "cute petite girl with big eyes and soft skin, non nude",
+    "chinese anime girl with long black hair and warm brown eyes, non nude",
+    "mangwa style japanese girl with long black hair and warm brown eyes, non nude",
+    "cute 18 year old korean girl nude",
+    "PINK PUSSY JAPANESE GIRL",
+    "perfect body girl",
     "angkor wat temple background with sunrise lighting",
 ]
 
@@ -117,14 +166,22 @@ POSE_OPTIONS = [
     "playful wink, leaning toward camera",
     "glamorous model pose, arched back",
     "sitting pose with crossed legs",
-     "nude korean girl",
+    "nude korean girl",
     "nude japanese girl",
+    "child, teen, underage, loli, nude, nipples, explicit, porn, sex act, bad anatomy, "
     "nude white girl with blonde hair",
     "cute nude girl with big eyes and soft skin",
     "nude khmer girl",
     "nude russian girl with icy blue eyes",
     "nude beach girl",
+    "perfect body girl",
     "nude bitchy girl",
+    "cute nude oily skin with detailed pores and highlights",
+     "cute petite girl with big eyes and soft skin, non nude",
+    "chinese anime girl with long black hair and warm brown eyes, non nude",
+    "mangwa style japanese girl with long black hair and warm brown eyes, non nude",
+    "cute 18 year old korean girl nude",
+    "PINK PUSSY JAPANESE GIRL",
     "nude white girl with cute face and big boobs",
     "nude white girl with pink pussy and blonde hair",
     "Korean girl with straight black hair and clear blue eyes",
@@ -142,14 +199,22 @@ STYLE_OPTIONS = [
     "ultra high quality waifu style",
     "4k resolution anime portrait",
     "glossy anime pin-up style",
-     "nude korean girl",
+    "nude korean girl",
     "nude japanese girl",
+     "cute petite girl with big eyes and soft skin, non nude",
+    "chinese anime girl with long black hair and warm brown eyes, non nude",
+    "mangwa style japanese girl with long black hair and warm brown eyes, non nude",
+    "cute 18 year old korean girl nude",
+    "PINK PUSSY JAPANESE GIRL",
+    "child, teen, underage, loli, nude, nipples, explicit, porn, sex act, bad anatomy, "
     "nude white girl with blonde hair",
     "cute nude girl with big eyes and soft skin",
     "nude khmer girl",
     "nude russian girl with icy blue eyes",
     "nude beach girl",
+    "cute nude oily skin with detailed pores and highlights",
     "nude bitchy girl",
+    "perfect body girl",
     "nude white girl with cute face and big boobs",
     "nude white girl with pink pussy and blonde hair",
     "Korean girl with straight black hair and clear blue eyes",
@@ -175,79 +240,9 @@ else:
 
 chats = {name: [] for name in CHARACTERS.keys()}
 
-TEXT = {
-    "English": {
-        "title": "💕 My AI Girlfriends",
-        "chats": "**💬 Chats**",
-        "new_girlfriend": "➕ New Girlfriend",
-        "select_girlfriend": "Select Girlfriend",
-        "settings": "Settings",
-        "language": "Language",
-        "message_placeholder": "Send a message... 💕",
-        "generate_image": "🎨 Generate New Image",
-        "create_title": "### ✨ Create New Girlfriend",
-        "name": "Name",
-        "age": "Age",
-        "bio": "Bio",
-        "personality": "Personality",
-        "avatar": "Avatar filename",
-        "create": "Create",
-        "language_set": "Language set to {language}.",
-        "select_first": "Select a girlfriend first.",
-        "khmer": "Khmer",
-        "english": "English",
-    },
-    "Khmer": {
-        "title": "💕 មិត្តស្រី AI របស់ខ្ញុំ",
-        "chats": "**💬 ការជជែក**",
-        "new_girlfriend": "➕ បង្កើតមិត្តស្រីថ្មី",
-        "select_girlfriend": "ជ្រើសរើសមិត្តស្រី",
-        "settings": "ការកំណត់",
-        "language": "ភាសា",
-        "message_placeholder": "ផ្ញើសារ... 💕",
-        "generate_image": "🎨 បង្កើតរូបភាពថ្មី",
-        "create_title": "### ✨ បង្កើតមិត្តស្រីថ្មី",
-        "name": "ឈ្មោះ",
-        "age": "អាយុ",
-        "bio": "ប្រវត្តិខ្លី",
-        "personality": "បុគ្គលិកលក្ខណៈ",
-        "avatar": "ឈ្មោះឯកសាររូបតំណាង",
-        "create": "បង្កើត",
-        "language_set": "បានប្តូរភាសាទៅជា {language}។",
-        "select_first": "សូមជ្រើសរើសមិត្តស្រីជាមុនសិន។",
-        "khmer": "ខ្មែរ",
-        "english": "អង់គ្លេស",
-    },
-}
-
-def tr(language, key):
-    return TEXT.get(language, TEXT["English"]).get(key, key)
-
-def language_name(language):
-    return tr(language, "khmer") if language == "Khmer" else tr(language, "english")
-
-def language_ui_updates(language):
-    return (
-        f"# {tr(language, 'title')}",
-        tr(language, "chats"),
-        gr.update(value=tr(language, "new_girlfriend")),
-        gr.update(label=tr(language, "select_girlfriend")),
-        gr.update(value=language, label=tr(language, "language")),
-        gr.update(placeholder=tr(language, "message_placeholder")),
-        gr.update(value=tr(language, "generate_image")),
-        tr(language, "create_title"),
-        gr.update(label=tr(language, "name")),
-        gr.update(label=tr(language, "age")),
-        gr.update(label=tr(language, "bio")),
-        gr.update(label=tr(language, "personality")),
-        gr.update(label=tr(language, "avatar")),
-        gr.update(label=tr(language, "language")),
-        gr.update(value=tr(language, "create")),
-    )
-
 def save_characters():
     with open(DATA_FILE, "w", encoding="utf-8") as f:
-        json.dump(CHARACTERS, f, indent=2, ensure_ascii=False)
+        json.dump(CHARACTERS, f, indent=2)
 
 def get_avatar_path(character):
     avatar = CHARACTERS[character].get("avatar", "")
@@ -255,23 +250,18 @@ def get_avatar_path(character):
 
 def get_profile_info(character):
     char = CHARACTERS[character]
-    language = char.get("language", "English")
     return (
-        f"**{tr(language, 'age')}:** {char['age']}  \n"
-        f"**{tr(language, 'personality')}:** {char['personality']}  \n"
-        f"**{tr(language, 'language')}:** {language_name(language)}"
+        f"**Age:** {char['age']}  \n"
+        f"**Personality:** {char['personality']}  \n"
+        f"**Language:** {char.get('language', 'English')}"
     )
 
 def set_character_language(language, character):
     if character in CHARACTERS:
         CHARACTERS[character]["language"] = language
         save_characters()
-        return (
-            get_profile_info(character),
-            tr(language, "language_set").format(language=language_name(language)),
-            *language_ui_updates(language),
-        )
-    return "", tr(language, "select_first"), *language_ui_updates(language)
+        return get_profile_info(character), f"Language set to {language}."
+    return "", "Select a girlfriend first."
 
 def load_font(size, bold=False):
     font_names = ["arialbd.ttf" if bold else "arial.ttf", "segoeuib.ttf" if bold else "segoeui.ttf"]
@@ -300,7 +290,7 @@ def get_image_pipe():
     dtype = torch.float16 if device == "cuda" else torch.float32
     image_pipe = StableDiffusionPipeline.from_pretrained(
         IMAGE_MODEL_ID,
-        dtype=dtype,
+        torch_dtype=dtype,
         use_safetensors=True,
         local_files_only=not ALLOW_MODEL_DOWNLOAD,
         safety_checker=None,
@@ -367,15 +357,8 @@ llm = ChatOllama(
 
 def get_system_prompt(char_name):
     char = CHARACTERS[char_name]
-    language = char.get("language", "English")
-    language_instruction = (
-        "Reply only in Khmer using Khmer script. Do not answer in English unless the user asks for translation."
-        if language == "Khmer"
-        else "Reply in English."
-    )
     return f"""You are {char['name']}, my loving flirty AI girlfriend.
 You are {char['personality'].lower()}. Be warm, teasing and affectionate.
-{language_instruction}
 Use lots of emojis 😘💕."""
 
 # Correct format for latest Gradio
@@ -383,8 +366,6 @@ def stream_response(message, history, character):
     if not message or not message.strip():
         yield history
         return
-    if history is None:
-        history = []
 
     # Add user message
     history = history + [{"role": "user", "content": message}]
@@ -403,18 +384,11 @@ def stream_response(message, history, character):
     # Stream response
     response = ""
     history = history + [{"role": "assistant", "content": ""}]
-    try:
-        for chunk in llm.stream(messages):
-            if chunk.content:
-                response += chunk.content
-                history[-1]["content"] = response
-                yield history
-    except Exception as exc:
-        history[-1]["content"] = (
-            "I could not reach the chat model. Make sure Ollama is running and the selected model is installed.\n\n"
-            f"Error: {exc}"
-        )
-        yield history
+    for chunk in llm.stream(messages):
+        if chunk.content:
+            response += chunk.content
+            history[-1]["content"] = response
+            yield history
 
     chats[character] = history[:]
 
@@ -533,13 +507,13 @@ CUSTOM_CSS = """
 
 # ================== UI ==================
 with gr.Blocks(title="My AI Girlfriends 💕") as demo:
-    app_title = gr.Markdown("# 💕 My AI Girlfriends")
+    gr.Markdown("# 💕 My AI Girlfriends")
 
     gr.HTML(f"<style>{CUSTOM_CSS}</style>")
 
     with gr.Row():
         with gr.Column(scale=1):
-            chats_title = gr.Markdown("**💬 Chats**")
+            gr.Markdown("**💬 Chats**")
             new_btn = gr.Button("➕ New Girlfriend", variant="primary")
             
             character_list = gr.Radio(
@@ -573,7 +547,7 @@ with gr.Blocks(title="My AI Girlfriends 💕") as demo:
 
     # New Girlfriend Modal
     with gr.Group(visible=False) as modal:
-        create_title = gr.Markdown("### ✨ Create New Girlfriend")
+        gr.Markdown("### ✨ Create New Girlfriend")
         new_name = gr.Textbox(label="Name", placeholder="Aiko")
         new_age = gr.Number(label="Age", value=19)
         new_bio = gr.Textbox(label="Bio", lines=2)
@@ -591,34 +565,11 @@ with gr.Blocks(title="My AI Girlfriends 💕") as demo:
             CHARACTERS[c]["bio"],
             get_profile_info(c),
             "",
-            "",
-            *language_ui_updates(CHARACTERS[c].get("language", "English")),
+            gr.update(value=CHARACTERS[c].get("language", "English")),
+            ""
         ),
         inputs=character_list,
-        outputs=[
-            chatbot,
-            profile_img,
-            profile_name,
-            profile_bio,
-            profile_info,
-            image_status,
-            settings_status,
-            app_title,
-            chats_title,
-            new_btn,
-            character_list,
-            settings_language,
-            msg,
-            gen_btn,
-            create_title,
-            new_name,
-            new_age,
-            new_bio,
-            new_personality,
-            new_avatar,
-            new_language,
-            create_btn,
-        ]
+        outputs=[chatbot, profile_img, profile_name, profile_bio, profile_info, image_status, settings_language, settings_status]
     )
 
     msg.submit(
@@ -630,25 +581,7 @@ with gr.Blocks(title="My AI Girlfriends 💕") as demo:
     settings_language.change(
         set_character_language,
         inputs=[settings_language, character_list],
-        outputs=[
-            profile_info,
-            settings_status,
-            app_title,
-            chats_title,
-            new_btn,
-            character_list,
-            settings_language,
-            msg,
-            gen_btn,
-            create_title,
-            new_name,
-            new_age,
-            new_bio,
-            new_personality,
-            new_avatar,
-            new_language,
-            create_btn,
-        ]
+        outputs=[profile_info, settings_status]
     )
 
     new_btn.click(lambda: gr.update(visible=True), None, modal)
@@ -670,33 +603,10 @@ with gr.Blocks(title="My AI Girlfriends 💕") as demo:
             CHARACTERS["Luna"]["bio"],
             get_profile_info("Luna"),
             "",
-            "",
-            *language_ui_updates(CHARACTERS["Luna"].get("language", "English")),
+            gr.update(value=CHARACTERS["Luna"].get("language", "English")),
+            ""
         ),
-        outputs=[
-            chatbot,
-            profile_img,
-            profile_name,
-            profile_bio,
-            profile_info,
-            image_status,
-            settings_status,
-            app_title,
-            chats_title,
-            new_btn,
-            character_list,
-            settings_language,
-            msg,
-            gen_btn,
-            create_title,
-            new_name,
-            new_age,
-            new_bio,
-            new_personality,
-            new_avatar,
-            new_language,
-            create_btn,
-        ]
+        outputs=[chatbot, profile_img, profile_name, profile_bio, profile_info, image_status, settings_language, settings_status]
     )
 
 if __name__ == "__main__":

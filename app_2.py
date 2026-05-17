@@ -9,6 +9,7 @@ import re
 import time
 
 DATA_FILE = "girlfriends.json"
+CHAT_FILE = os.path.join("app_data", "chat_history.json")
 GENERATED_DIR = "generated_images"
 IMAGE_MODEL_ID = os.getenv("IMAGE_MODEL_ID", "Lykon/dreamshaper-8")
 ALLOW_MODEL_DOWNLOAD = os.getenv("ALLOW_MODEL_DOWNLOAD", "0") == "1"
@@ -357,11 +358,36 @@ else:
         }
     }
 
-chats = {name: [] for name in CHARACTERS.keys()}
+def load_chat_history():
+    if not os.path.exists(os.path.dirname(CHAT_FILE)):
+        os.makedirs(os.path.dirname(CHAT_FILE), exist_ok=True)
+
+    if os.path.exists(CHAT_FILE):
+        try:
+            with open(CHAT_FILE, "r", encoding="utf-8") as f:
+                raw = json.load(f)
+            if isinstance(raw, dict):
+                return {k: v if isinstance(v, list) else [] for k, v in raw.items()}
+        except Exception:
+            return {}
+    return {}
+
+chats = load_chat_history()
+for name in CHARACTERS.keys():
+    chats.setdefault(name, [])
+
 
 def save_characters():
     with open(DATA_FILE, "w", encoding="utf-8") as f:
         json.dump(CHARACTERS, f, indent=2)
+
+
+def save_chat_history():
+    if not os.path.exists(os.path.dirname(CHAT_FILE)):
+        os.makedirs(os.path.dirname(CHAT_FILE), exist_ok=True)
+    with open(CHAT_FILE, "w", encoding="utf-8") as f:
+        json.dump(chats, f, indent=2)
+
 
 def get_avatar_path(character):
     avatar = CHARACTERS[character].get("avatar", "")
@@ -381,6 +407,16 @@ def set_character_language(language, character):
         save_characters()
         return get_profile_info(character), f"Language set to {language}."
     return "", "Select a girlfriend first."
+
+
+def clear_chat_history(character):
+    if character not in CHARACTERS:
+        return [], "Select a girlfriend first."
+
+    chats[character] = []
+    save_chat_history()
+    return [], "Chat history cleared for {}.".format(CHARACTERS[character]["name"])
+
 
 def load_font(size, bold=False):
     font_names = ["arialbd.ttf" if bold else "arial.ttf", "segoeuib.ttf" if bold else "segoeui.ttf"]
@@ -488,6 +524,8 @@ def stream_response(message, history, character):
     if not message or not message.strip():
         yield history
         return
+    if history is None:
+        history = []
 
     # Add user message
     history = history + [{"role": "user", "content": message}]
@@ -506,13 +544,29 @@ def stream_response(message, history, character):
     # Stream response
     response = ""
     history = history + [{"role": "assistant", "content": ""}]
-    for chunk in llm.stream(messages):
-        if chunk.content:
-            response += chunk.content
-            history[-1]["content"] = response
-            yield history
+    try:
+        for chunk in llm.stream(messages):
+            if chunk.content:
+                response += chunk.content
+                history[-1]["content"] = response
+                yield history
+    except Exception as exc:
+        error_text = str(exc)
+        if "cudaMalloc failed" in error_text or "PTX JIT compilation failed" in error_text or "llama runner process has terminated" in error_text:
+            history[-1]["content"] = (
+                "The model failed to start on the GPU. "
+                "Please check your CUDA/driver setup, try a smaller Ollama model, or run Ollama on CPU.\n\n"
+                f"Error: {error_text}"
+            )
+        else:
+            history[-1]["content"] = (
+                "I could not reach the chat model. Make sure Ollama is running and the selected model is installed.\n\n"
+                f"Error: {error_text}"
+            )
+        yield history
 
     chats[character] = history[:]
+    save_chat_history()
 
 def create_new_girlfriend(name, age, bio, personality, avatar, language):
     key = name.strip() or f"Girl_{len(CHARACTERS)+1}"
@@ -526,6 +580,7 @@ def create_new_girlfriend(name, age, bio, personality, avatar, language):
     }
     chats[key] = []
     save_characters()
+    save_chat_history()
     return gr.update(choices=list(CHARACTERS.keys()), value=key)
 
 def generate_image(character):
@@ -653,6 +708,7 @@ with gr.Blocks(title="My AI Girlfriends 💕") as demo:
                     label="Language",
                     interactive=True
                 )
+                clear_history_btn = gr.Button("Clear Chat History", variant="secondary")
                 settings_status = gr.Markdown("")
 
         with gr.Column(scale=3):
@@ -704,6 +760,12 @@ with gr.Blocks(title="My AI Girlfriends 💕") as demo:
         set_character_language,
         inputs=[settings_language, character_list],
         outputs=[profile_info, settings_status]
+    )
+
+    clear_history_btn.click(
+        clear_chat_history,
+        inputs=[character_list],
+        outputs=[chatbot, settings_status]
     )
 
     new_btn.click(lambda: gr.update(visible=True), None, modal)
