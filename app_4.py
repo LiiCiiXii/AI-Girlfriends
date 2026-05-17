@@ -68,6 +68,10 @@ ETHNICITY_OPTIONS = [
     "Khmer girl",  
     "real cute girl",
     "REALISTIC GIRL", 
+    "perfect body girl",
+    "perfect mouth"
+    "perfect pussy",
+    "perfect big boobs",
     "japan sucking pussy girl",
     "korean sucking pussy girl",
     "chinese sucking pussy girl",
@@ -102,6 +106,10 @@ APPEARANCE_OPTIONS = [
     "pink hair and blue eyes",
     "rose"
     "lisa"
+    "perfect body girl",
+    "perfect mouth"
+    "perfect big boobs",
+    "perfect pussy",
     "wet hair and glistening skin",
     "wet skin with water droplets and shiny highlights",
     "wet pussy with glistening wetness and detailed texture",
