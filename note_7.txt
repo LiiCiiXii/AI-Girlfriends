@@ -359,20 +359,6 @@ else:
     }
 
 
-def ensure_valid_history(history):
-    """Ensure history is a valid list of message dicts with role and content"""
-    if not isinstance(history, list):
-        return []
-    valid = []
-    for msg in history:
-        if isinstance(msg, dict) and "role" in msg and "content" in msg:
-            valid.append({
-                "role": str(msg.get("role", "user")).strip(),
-                "content": str(msg.get("content", "")).strip()
-            })
-    return valid
-
-
 def normalize_chat_message(message):
     if isinstance(message, dict):
         content = message.get("content", "")
@@ -396,18 +382,13 @@ def normalize_chat_history(history):
         return normalized
     for item in history:
         if isinstance(item, dict) and "role" in item and "content" in item:
-            normalized.append(item)
+            normalized.append(normalize_chat_message(item))
+        elif isinstance(item, (list, tuple)) and len(item) == 2:
+            normalized.append({"role": "user", "content": str(item[0])})
+            normalized.append({"role": "assistant", "content": str(item[1])})
+        else:
+            normalized.append({"role": "user", "content": str(item)})
     return normalized
-
-
-def history_to_display_format(history):
-    """Keep history in dict format - no conversion needed"""
-    return history if isinstance(history, list) else []
-
-
-def display_to_history_format(history):
-    """Keep history in dict format - no conversion needed"""
-    return history if isinstance(history, list) else []
 
 
 def history_for_chatbot(history):
@@ -434,7 +415,15 @@ def normalize_history_from_chatbot(history):
     normalized = []
     for item in history:
         if isinstance(item, dict) and "role" in item and "content" in item:
-            normalized.append(item)
+            normalized.append(normalize_chat_message(item))
+        elif isinstance(item, (list, tuple)) and len(item) == 2:
+            if item[0]:  # Only add user message if not empty
+                normalized.append({"role": "user", "content": str(item[0])})
+            if item[1]:  # Only add assistant message if not empty
+                normalized.append({"role": "assistant", "content": str(item[1])})
+        else:
+            if item:  # Only add if not empty
+                normalized.append({"role": "user", "content": str(item)})
     return normalized
 
 
@@ -448,13 +437,7 @@ def load_chat_history():
             with open(CHAT_FILE, "r", encoding="utf-8") as f:
                 raw = json.load(f)
             if isinstance(raw, dict):
-                result = {}
-                for k, v in raw.items():
-                    if isinstance(v, list):
-                        result[k] = ensure_valid_history(v)
-                    else:
-                        result[k] = []
-                return result
+                return {k: normalize_chat_history(v) if isinstance(v, list) else [] for k, v in raw.items()}
         except Exception:
             return {}
     return {}
@@ -611,33 +594,35 @@ Use lots of emojis 😘💕."""
 
 # Correct format for latest Gradio
 def stream_response(message, history, character):
-    # Ensure history is valid dict list format
-    internal_history = ensure_valid_history(history if history else [])
-    
     if not message or not message.strip():
-        yield gr.update(value=internal_history)
+        yield history if isinstance(history, list) else []
         return
 
+    # history is already in dict format from Gradio
+    if not isinstance(history, list):
+        history = []
+    
     # Add user message
-    internal_history = internal_history + [{"role": "user", "content": message}]
-    yield gr.update(value=internal_history)
+    history = history + [{"role": "user", "content": message}]
+    yield history
 
     system_prompt = get_system_prompt(character)
     messages = [SystemMessage(content=system_prompt)]
-    for msg in internal_history:
-        if msg.get("role") == "user":
-            messages.append(HumanMessage(content=msg.get("content", "")))
-        elif msg.get("role") == "assistant":
-            messages.append(AIMessage(content=msg.get("content", "")))
+    for msg in history:
+        if isinstance(msg, dict):
+            if msg.get("role") == "user":
+                messages.append(HumanMessage(content=msg.get("content", "")))
+            elif msg.get("role") == "assistant":
+                messages.append(AIMessage(content=msg.get("content", "")))
 
     response = ""
-    internal_history = internal_history + [{"role": "assistant", "content": ""}]
+    history = history + [{"role": "assistant", "content": ""}]
     try:
         for chunk in llm.stream(messages):
             if chunk.content:
                 response += chunk.content
-                internal_history[-1]["content"] = response
-                yield ensure_valid_history(internal_history)
+                history[-1]["content"] = response
+                yield history
     except Exception as exc:
         # Fallback to CPU if GPU memory allocation fails
         message_text = str(exc)
@@ -646,14 +631,14 @@ def stream_response(message, history, character):
             for chunk in cpu_llm.stream(messages):
                 if chunk.content:
                     response += chunk.content
-                    internal_history[-1]["content"] = response
-                    yield gr.update(value=ensure_valid_history(internal_history))
+                    history[-1]["content"] = response
+                    yield history
         else:
-            internal_history[-1]["content"] = f"Error: {exc}"
-            yield ensure_valid_history(internal_history)
+            history[-1]["content"] = f"Error: {exc}"
+            yield history
             return
 
-    chats[character] = ensure_valid_history(internal_history)
+    chats[character] = history[:]
     save_chat_history()
 
 
@@ -675,16 +660,8 @@ def handle_image_command(message, character):
 
 
 def handle_user_message(message, history, character):
-    # Debug: log incoming history shape from Gradio
-    try:
-        print('DEBUG handle_user_message history type:', type(history), 'len:', len(history) if history is not None else 0)
-        if isinstance(history, list):
-            print('DEBUG history sample:', history[:5])
-    except Exception:
-        pass
-
-    # Ensure history is valid dict list format
-    internal_history = ensure_valid_history(history if history else [])
+    if not isinstance(history, list):
+        history = []
     
     if is_image_request(message):
         image_path, status = generate_profile_image(character)
@@ -693,13 +670,13 @@ def handle_user_message(message, history, character):
             if image_path
             else "I couldn't generate the image right now, but I will keep trying."
         )
-        internal_history = internal_history + [
+        history = history + [
             {"role": "user", "content": message},
             {"role": "assistant", "content": assistant_text},
         ]
-        chats[character] = ensure_valid_history(internal_history)
+        chats[character] = history[:]
         save_chat_history()
-        return internal_history, image_path, status
+        return history, image_path, status
 
     return stream_response(message, history, character), gr.update(), gr.update()
 
@@ -883,7 +860,7 @@ with gr.Blocks(title="My AI Girlfriends 💕") as demo:
     # Events
     character_list.change(
         lambda c: (
-            ensure_valid_history(chats.get(c, [])),
+            chats.get(c, []),
             get_avatar_path(c),
             f"**{CHARACTERS[c]['name']}**",
             CHARACTERS[c]["bio"],
@@ -925,7 +902,7 @@ with gr.Blocks(title="My AI Girlfriends 💕") as demo:
     # Initial Load
     demo.load(
         lambda: (
-            ensure_valid_history(chats["Luna"]),
+            chats["Luna"],
             get_avatar_path("Luna"),
             "**Luna**",
             CHARACTERS["Luna"]["bio"],
