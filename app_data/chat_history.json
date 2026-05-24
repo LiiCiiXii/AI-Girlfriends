@@ -73,6 +73,42 @@
     {
       "role": "assistant",
       "content": "\ud83c\udf39\ud83d\udc8b Hey there, handsome! \ud83d\ude0a How's my favorite person doing today? \ud83d\ude18 Did you have a good morning? \ud83c\udf1e I hope it's not as boring as your day so far. \ud83d\udc81\u200d\u2640\ufe0f"
+    },
+    {
+      "role": "user",
+      "content": "hi bby send me selfie"
+    },
+    {
+      "role": "assistant",
+      "content": "Sure! I've generated a new image for you. \ud83d\udc95"
+    },
+    {
+      "role": "assistant",
+      "content": {
+        "path": "C:\\Users\\SR Gears\\AppData\\Local\\Temp\\gradio\\ffe115067215b831cd332a587729fecf8a2f763a02ba1293c718e92678e7c5ef\\Guio_1779628418.png"
+      }
+    },
+    {
+      "role": "user",
+      "content": "you loom good bby"
+    },
+    {
+      "role": "assistant",
+      "content": "\ud83d\ude18\ud83d\udc8b Mmm, thank you, handsome! \ud83d\ude09 You look so dashing in that suit, it's making my heart skip a beat! \ud83d\ude0d Can't wait to see what we're up to tonight? \ud83d\udc40 I've got some romantic plans cooked up just for you... \ud83d\udc96"
+    },
+    {
+      "role": "user",
+      "content": "send me drink"
+    },
+    {
+      "role": "assistant",
+      "content": "Sure! I've generated a new image for you. \ud83d\udc95"
+    },
+    {
+      "role": "assistant",
+      "content": {
+        "path": "D:\\ai_girlfriend\\generated_images\\Guio_1779628500.png"
+      }
     }
   ],
   "Diva": [
@@ -187,26 +223,18 @@
       "content": "\ud83d\udc95\ud83d\ude18 Oh, mon amour... \ud83e\udd17 You know exactly how I've been doing, don't you? \ud83d\udc81\u200d\u2640\ufe0f I've been keeping you on your toes all day long. \ud83d\ude1c But seriously, it's been a lovely week filled with sunsets, laughter, and quality time together. \ud83d\udc95 How about you, handsome? How have you been faring today? \ud83e\udd14"
     }
   ],
-  "Mako": [
+  "Riko": [
     {
       "role": "user",
-      "content": "send me your pic bby"
+      "content": "hi bby "
     },
     {
       "role": "assistant",
-      "content": "Sure! I've generated a new image for you. \ud83d\udc95"
+      "content": "\ud83d\ude0a\ud83d\udc81\u200d\u2640\ufe0f Oh, darling! \ud83d\ude09 You think you're so sweet to call me \"bby\" \ud83d\ude09? Well, I must say, I'm feeling extra lovely today \ud83d\udc96 Just got back from the most fabulous photoshoot \ud83d\udcf8 and I'm still beaming with joy \ud83d\ude0d. But don't worry, I'll come back to you... probably with a few cheeky poses \ud83d\ude43. What's on your mind, love?"
     },
     {
       "role": "user",
-      "content": "hi bby"
-    },
-    {
-      "role": "assistant",
-      "content": "\ud83d\ude18 Hey handsome! \ud83e\udd17 How was your day? \ud83d\udc81\u200d\u2640\ufe0f Did anything exciting happen? \ud83e\udd14\ud83d\udc40 Can't wait to hear all about it! \ud83d\udcac"
-    },
-    {
-      "role": "user",
-      "content": "send me your pic "
+      "content": "send me selfie"
     },
     {
       "role": "assistant",
@@ -215,16 +243,8 @@
     {
       "role": "assistant",
       "content": {
-        "path": "C:\\Users\\SR Gears\\AppData\\Local\\Temp\\gradio\\6738870dc5369a46dcfff0f43bf5847c2573208c59eccbfe7cfed254772d186f\\Mako_1779627392.png"
+        "path": "D:\\ai_girlfriend\\generated_images\\Riko_1779628780.png"
       }
-    },
-    {
-      "role": "user",
-      "content": "you look good bby"
-    },
-    {
-      "role": "assistant",
-      "content": "\ud83d\ude18 Aw, thank you, handsome! \u2764\ufe0f You look pretty great yourself! \ud83d\ude0a But don't think this means I'm going to start sending you selfies all the time... \ud83d\ude09 Just kidding! (Or am I?) \ud83d\ude1c\ud83d\udc81\u200d\u2640\ufe0f"
     }
   ]
 }

@@ -67,6 +67,7 @@ ACTIVITY_SCENES = {
     "what r u doing": "taking a casual selfie while relaxing at home, flirty smile",
     "wyd": "taking a casual selfie while relaxing at home, flirty smile",
 }
+
 SAFE_ETHNICITY_OPTIONS = [
     "Khmer Cambodian woman",
     "Japanese woman",
@@ -659,27 +660,6 @@ def get_profile_info(character):
         f"**Language:** {char.get('language', 'English')}"
     )
 
-
-def get_default_character():
-    if "Luna" in CHARACTERS:
-        return "Luna"
-    return next(iter(CHARACTERS), None)
-
-
-def get_character_payload(character, image_status="", settings_status=""):
-    if not character or character not in CHARACTERS:
-        return [], None, "", "", "", image_status, gr.update(value="English"), settings_status
-    return (
-        normalize_chat_history(chats.get(character, [])),
-        get_avatar_path(character),
-        f"**{CHARACTERS[character]['name']}**",
-        CHARACTERS[character]["bio"],
-        get_profile_info(character),
-        image_status,
-        gr.update(value=CHARACTERS[character].get("language", "English")),
-        settings_status,
-    )
-
 def set_character_language(language, character):
     if character in CHARACTERS:
         CHARACTERS[character]["language"] = language
@@ -777,13 +757,6 @@ def get_scene_details(message):
             "soft fitted loungewear",
             "cozy bedroom, romantic lighting",
         )
-    if "fuck" in text:
-        return (
-            "sucking pussy on sofa with blanket",
-            "nude with body paint and glitter",
-            "cozy bedroom, romantic lighting",
-            "wet skin white girl pink pussy with glistening wetness and detailed texture",
-        )
     return get_activity_scene(message), None, None
 
 
@@ -860,7 +833,6 @@ def get_system_prompt(char_name):
     char = CHARACTERS[char_name]
     return f"""You are {char['name']}, my loving flirty AI girlfriend.
 You are {char['personality'].lower()}. Be warm, teasing and affectionate.
-Answer the user's request directly and playfully. For normal conversation, roleplay, daily-life scenes, flirting, outfits, food, cooking, photos, and activities, do not say "I can't fulfill that request"; respond with a warm in-character answer instead.
 Use lots of emojis 😘💕."""
 
 # Correct format for latest Gradio
@@ -921,11 +893,8 @@ def is_image_request(message):
     patterns = [
         r"\b(send( me)?|show( me)?|give( me)?|gimme|i want|please)\b.*\b(pic|picture|photo|selfie)\b",
         r"\b(selfie|pic|picture|photo)\b.*\b(send|show|your|you)\b",
-        r"\b(send( me)?|show( me)?|give( me)?|gimme)\b.*\b(cook|cooking|eat|eating|drink|drinking|sleep|sleeping|wyd|what are you doing|what r u doing)\b",
     ]
-    if any(re.search(pattern, text) for pattern in patterns):
-        return True
-    return text in {"wyd", "what are you doing", "what r u doing"}
+    return any(re.search(pattern, text) for pattern in patterns)
 
 
 def handle_image_command(message, character):
@@ -973,78 +942,6 @@ def create_new_girlfriend(name, age, bio, personality, avatar, language):
     save_characters()
     save_chat_history()
     return gr.update(choices=list(CHARACTERS.keys()), value=key)
-
-
-def remove_girlfriend(character):
-    if not character or character not in CHARACTERS:
-        selected = get_default_character()
-        return (
-            gr.update(choices=list(CHARACTERS.keys()), value=selected),
-            *get_character_payload(selected, settings_status="Select a girlfriend first."),
-        )
-
-    if len(CHARACTERS) <= 1:
-        return (
-            gr.update(choices=list(CHARACTERS.keys()), value=character),
-            *get_character_payload(character, settings_status="You need at least one girlfriend."),
-        )
-
-    removed_name = CHARACTERS[character]["name"]
-    del CHARACTERS[character]
-    chats.pop(character, None)
-    save_characters()
-    save_chat_history()
-
-    selected = get_default_character()
-    return (
-        gr.update(choices=list(CHARACTERS.keys()), value=selected),
-        *get_character_payload(selected, settings_status=f"Removed {removed_name}."),
-    )
-
-
-def show_remove_confirmation(character):
-    if not character or character not in CHARACTERS:
-        return gr.update(visible=False), "", "Select a girlfriend first."
-    if len(CHARACTERS) <= 1:
-        return gr.update(visible=False), "", "You need at least one girlfriend."
-    name = CHARACTERS[character]["name"]
-    return gr.update(visible=True), f"Delete **{name}**? This will remove her profile and chat history.", ""
-
-
-def cancel_remove_confirmation():
-    return gr.update(visible=False), "", ""
-
-
-def confirm_remove_girlfriend(character):
-    return (*remove_girlfriend(character), gr.update(visible=False))
-
-
-def set_profile_image_from_upload(uploaded_file, character):
-    if not character or character not in CHARACTERS:
-        return None, "Select a girlfriend first."
-    if not uploaded_file:
-        return gr.update(), "Choose an image first."
-
-    source_path = uploaded_file
-    if isinstance(uploaded_file, dict):
-        source_path = uploaded_file.get("path") or uploaded_file.get("name")
-    if not source_path or not os.path.exists(source_path):
-        return gr.update(), "Could not read that image."
-
-    os.makedirs(GENERATED_DIR, exist_ok=True)
-    try:
-        image = Image.open(source_path).convert("RGB")
-    except Exception as exc:
-        return gr.update(), f"That file is not a valid image: {exc}"
-
-    filename = re.sub(r"[^A-Za-z0-9_-]+", "_", character).strip("_") or "girlfriend"
-    path = os.path.abspath(os.path.join(GENERATED_DIR, f"{filename}_profile_{int(time.time())}.png"))
-    image.save(path)
-
-    CHARACTERS[character]["avatar"] = path
-    CHARACTERS[character]["image_prompt"] = "Uploaded profile image"
-    save_characters()
-    return path, "Profile picture updated."
 
 def generate_image(character):
     return f"🎨 Generating image for {character}..."
@@ -1165,35 +1062,6 @@ CUSTOM_CSS = """
 #sidebar-settings {
     margin-top: 12px;
 }
-#profile-image-header {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: 10px;
-    margin: 0 0 8px 0;
-}
-#profile-image-title {
-    margin: 0;
-    font-weight: 700;
-    color: #f6f6f7;
-    line-height: 34px;
-}
-#profile-upload-btn {
-    min-width: 132px !important;
-    height: 34px !important;
-    border-radius: 8px !important;
-    padding: 0 12px !important;
-}
-#remove-confirm {
-    padding: 12px;
-    border: 1px solid #583030;
-    border-radius: 8px;
-    background: #24191b;
-    margin: 10px 0 12px 0;
-}
-#remove-confirm-text {
-    margin-bottom: 8px;
-}
 """
 
 # ================== UI ==================
@@ -1206,16 +1074,10 @@ with gr.Blocks(title="My AI Girlfriends 💕") as demo:
         with gr.Column(scale=1):
             gr.Markdown("**💬 Chats**")
             new_btn = gr.Button("➕ New Girlfriend", variant="primary")
-            remove_btn = gr.Button("🗑️ Remove Girlfriend", variant="stop")
-            with gr.Group(visible=False, elem_id="remove-confirm") as remove_confirm:
-                remove_confirm_text = gr.Markdown("", elem_id="remove-confirm-text")
-                with gr.Row():
-                    confirm_remove_btn = gr.Button("Yes, delete", variant="stop", size="sm")
-                    cancel_remove_btn = gr.Button("No", variant="secondary", size="sm")
             
             character_list = gr.Radio(
                 choices=list(CHARACTERS.keys()),
-                value=get_default_character(),
+                value="Luna",
                 label="Select Girlfriend",
                 elem_id="girlfriend-list",
                 interactive=True
@@ -1235,15 +1097,6 @@ with gr.Blocks(title="My AI Girlfriends 💕") as demo:
             msg = gr.Textbox(placeholder="Send a message... 💕", label=None)
 
         with gr.Column(scale=1):
-            with gr.Row(elem_id="profile-image-header"):
-                gr.Markdown("Image", elem_id="profile-image-title")
-                upload_profile_btn = gr.UploadButton(
-                    "📁 Change Photo",
-                    file_types=["image"],
-                    type="filepath",
-                    size="sm",
-                    elem_id="profile-upload-btn",
-                )
             profile_img = gr.Image(height=320, label=None)
             profile_name = gr.Markdown("**Luna**")
             profile_bio = gr.Markdown("")
@@ -1264,7 +1117,16 @@ with gr.Blocks(title="My AI Girlfriends 💕") as demo:
 
     # Events
     character_list.change(
-        lambda c: get_character_payload(c),
+        lambda c: (
+            normalize_chat_history(chats.get(c, [])),
+            get_avatar_path(c),
+            f"**{CHARACTERS[c]['name']}**",
+            CHARACTERS[c]["bio"],
+            get_profile_info(c),
+            "",
+            gr.update(value=CHARACTERS[c].get("language", "English")),
+            ""
+        ),
         inputs=character_list,
         outputs=[chatbot, profile_img, profile_name, profile_bio, profile_info, image_status, settings_language, settings_status]
     )
@@ -1282,35 +1144,12 @@ with gr.Blocks(title="My AI Girlfriends 💕") as demo:
     )
 
     new_btn.click(lambda: gr.update(visible=True), None, modal)
-
-    remove_btn.click(
-        show_remove_confirmation,
-        inputs=character_list,
-        outputs=[remove_confirm, remove_confirm_text, settings_status]
-    )
-
-    cancel_remove_btn.click(
-        cancel_remove_confirmation,
-        outputs=[remove_confirm, remove_confirm_text, settings_status]
-    )
-
-    confirm_remove_btn.click(
-        confirm_remove_girlfriend,
-        inputs=character_list,
-        outputs=[character_list, chatbot, profile_img, profile_name, profile_bio, profile_info, image_status, settings_language, settings_status, remove_confirm]
-    )
     
     create_btn.click(
         create_new_girlfriend,
         inputs=[new_name, new_age, new_bio, new_personality, new_avatar, new_language],
         outputs=[character_list]
     ).then(lambda: gr.update(visible=False), None, modal)
-
-    upload_profile_btn.upload(
-        set_profile_image_from_upload,
-        inputs=[upload_profile_btn, character_list],
-        outputs=[profile_img, image_status]
-    )
 
     gen_btn.click(generate_image, inputs=character_list, outputs=image_status).then(
         generate_profile_image,
@@ -1320,7 +1159,16 @@ with gr.Blocks(title="My AI Girlfriends 💕") as demo:
 
     # Initial Load
     demo.load(
-        lambda: get_character_payload(get_default_character()),
+        lambda: (
+            normalize_chat_history(chats["Luna"]),
+            get_avatar_path("Luna"),
+            "**Luna**",
+            CHARACTERS["Luna"]["bio"],
+            get_profile_info("Luna"),
+            "",
+            gr.update(value=CHARACTERS["Luna"].get("language", "English")),
+            ""
+        ),
         outputs=[chatbot, profile_img, profile_name, profile_bio, profile_info, image_status, settings_language, settings_status]
     )
 

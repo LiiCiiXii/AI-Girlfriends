@@ -777,13 +777,6 @@ def get_scene_details(message):
             "soft fitted loungewear",
             "cozy bedroom, romantic lighting",
         )
-    if "fuck" in text:
-        return (
-            "sucking pussy on sofa with blanket",
-            "nude with body paint and glitter",
-            "cozy bedroom, romantic lighting",
-            "wet skin white girl pink pussy with glistening wetness and detailed texture",
-        )
     return get_activity_scene(message), None, None
 
 
@@ -1002,23 +995,6 @@ def remove_girlfriend(character):
     )
 
 
-def show_remove_confirmation(character):
-    if not character or character not in CHARACTERS:
-        return gr.update(visible=False), "", "Select a girlfriend first."
-    if len(CHARACTERS) <= 1:
-        return gr.update(visible=False), "", "You need at least one girlfriend."
-    name = CHARACTERS[character]["name"]
-    return gr.update(visible=True), f"Delete **{name}**? This will remove her profile and chat history.", ""
-
-
-def cancel_remove_confirmation():
-    return gr.update(visible=False), "", ""
-
-
-def confirm_remove_girlfriend(character):
-    return (*remove_girlfriend(character), gr.update(visible=False))
-
-
 def set_profile_image_from_upload(uploaded_file, character):
     if not character or character not in CHARACTERS:
         return None, "Select a girlfriend first."
@@ -1165,34 +1141,20 @@ CUSTOM_CSS = """
 #sidebar-settings {
     margin-top: 12px;
 }
-#profile-image-header {
+#profile-image-tools {
     display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: 10px;
-    margin: 0 0 8px 0;
-}
-#profile-image-title {
-    margin: 0;
-    font-weight: 700;
-    color: #f6f6f7;
-    line-height: 34px;
+    justify-content: flex-start;
+    margin-bottom: -42px;
+    padding-left: 10px;
+    position: relative;
+    z-index: 5;
 }
 #profile-upload-btn {
-    min-width: 132px !important;
+    min-width: 42px !important;
+    width: 42px !important;
     height: 34px !important;
     border-radius: 8px !important;
-    padding: 0 12px !important;
-}
-#remove-confirm {
-    padding: 12px;
-    border: 1px solid #583030;
-    border-radius: 8px;
-    background: #24191b;
-    margin: 10px 0 12px 0;
-}
-#remove-confirm-text {
-    margin-bottom: 8px;
+    padding: 0 !important;
 }
 """
 
@@ -1207,11 +1169,6 @@ with gr.Blocks(title="My AI Girlfriends 💕") as demo:
             gr.Markdown("**💬 Chats**")
             new_btn = gr.Button("➕ New Girlfriend", variant="primary")
             remove_btn = gr.Button("🗑️ Remove Girlfriend", variant="stop")
-            with gr.Group(visible=False, elem_id="remove-confirm") as remove_confirm:
-                remove_confirm_text = gr.Markdown("", elem_id="remove-confirm-text")
-                with gr.Row():
-                    confirm_remove_btn = gr.Button("Yes, delete", variant="stop", size="sm")
-                    cancel_remove_btn = gr.Button("No", variant="secondary", size="sm")
             
             character_list = gr.Radio(
                 choices=list(CHARACTERS.keys()),
@@ -1235,16 +1192,15 @@ with gr.Blocks(title="My AI Girlfriends 💕") as demo:
             msg = gr.Textbox(placeholder="Send a message... 💕", label=None)
 
         with gr.Column(scale=1):
-            with gr.Row(elem_id="profile-image-header"):
-                gr.Markdown("Image", elem_id="profile-image-title")
+            with gr.Row(elem_id="profile-image-tools"):
                 upload_profile_btn = gr.UploadButton(
-                    "📁 Change Photo",
+                    "📁",
                     file_types=["image"],
                     type="filepath",
                     size="sm",
                     elem_id="profile-upload-btn",
                 )
-            profile_img = gr.Image(height=320, label=None)
+            profile_img = gr.Image(height=320, label="Image")
             profile_name = gr.Markdown("**Luna**")
             profile_bio = gr.Markdown("")
             profile_info = gr.Markdown("")
@@ -1284,20 +1240,9 @@ with gr.Blocks(title="My AI Girlfriends 💕") as demo:
     new_btn.click(lambda: gr.update(visible=True), None, modal)
 
     remove_btn.click(
-        show_remove_confirmation,
+        remove_girlfriend,
         inputs=character_list,
-        outputs=[remove_confirm, remove_confirm_text, settings_status]
-    )
-
-    cancel_remove_btn.click(
-        cancel_remove_confirmation,
-        outputs=[remove_confirm, remove_confirm_text, settings_status]
-    )
-
-    confirm_remove_btn.click(
-        confirm_remove_girlfriend,
-        inputs=character_list,
-        outputs=[character_list, chatbot, profile_img, profile_name, profile_bio, profile_info, image_status, settings_language, settings_status, remove_confirm]
+        outputs=[character_list, chatbot, profile_img, profile_name, profile_bio, profile_info, image_status, settings_language, settings_status]
     )
     
     create_btn.click(
