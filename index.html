@@ -1,13 +1,766 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AI Girlfriend Gallery</title>
+  <style>
+    :root {
+      color-scheme: dark;
+      --bg: #0e1016;
+      --panel: rgba(24, 27, 38, 0.78);
+      --panel-strong: rgba(29, 34, 48, 0.95);
+      --line: rgba(255, 255, 255, 0.11);
+      --text: #f5f4ef;
+      --muted: #a8aaba;
+      --accent: #ff6f91;
+      --accent-2: #3ed7b5;
+      --shadow: 0 20px 60px rgba(0, 0, 0, 0.35);
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      min-height: 100vh;
+      margin: 0;
+      background:
+        radial-gradient(circle at 18% 12%, rgba(255, 111, 145, 0.20), transparent 30%),
+        radial-gradient(circle at 82% 6%, rgba(62, 215, 181, 0.14), transparent 28%),
+        linear-gradient(145deg, #10131b 0%, #0e1016 48%, #151019 100%);
+      color: var(--text);
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      letter-spacing: 0;
+    }
+
+    button,
+    input,
+    select {
+      font: inherit;
+    }
+
+    .app {
+      width: min(1440px, calc(100% - 32px));
+      margin: 0 auto;
+      padding: 28px 0 44px;
+    }
+
+    .topbar {
+      position: sticky;
+      top: 0;
+      z-index: 10;
+      padding: 14px 0;
+      backdrop-filter: blur(18px);
+    }
+
+    .hero,
+    .controls,
+    .empty,
+    dialog {
+      border: 1px solid var(--line);
+      background: var(--panel);
+      box-shadow: var(--shadow);
+      backdrop-filter: blur(18px);
+    }
+
+    .hero {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) auto;
+      gap: 20px;
+      align-items: end;
+      padding: 24px;
+      border-radius: 8px;
+    }
+
+    h1 {
+      margin: 0;
+      font-size: clamp(2rem, 5vw, 4.75rem);
+      line-height: 0.95;
+      font-weight: 850;
+      letter-spacing: 0;
+    }
+
+    .subtitle {
+      max-width: 720px;
+      margin: 14px 0 0;
+      color: var(--muted);
+      font-size: 1rem;
+      line-height: 1.6;
+    }
+
+    .stats {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(86px, 1fr));
+      gap: 10px;
+      min-width: min(380px, 100%);
+    }
+
+    .stat {
+      min-height: 86px;
+      padding: 14px;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: rgba(255, 255, 255, 0.05);
+    }
+
+    .stat strong {
+      display: block;
+      font-size: 1.55rem;
+      line-height: 1;
+    }
+
+    .stat span {
+      display: block;
+      margin-top: 8px;
+      color: var(--muted);
+      font-size: 0.78rem;
+      text-transform: uppercase;
+    }
+
+    .controls {
+      display: grid;
+      grid-template-columns: minmax(180px, 1fr) 160px 150px 150px auto;
+      gap: 10px;
+      align-items: center;
+      margin-top: 12px;
+      padding: 12px;
+      border-radius: 8px;
+    }
+
+    .field {
+      position: relative;
+      min-width: 0;
+    }
+
+    .field input,
+    .field select,
+    .folder-button {
+      width: 100%;
+      height: 44px;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: rgba(255, 255, 255, 0.07);
+      color: var(--text);
+      outline: none;
+    }
+
+    .field input {
+      padding: 0 14px 0 40px;
+    }
+
+    .field select {
+      padding: 0 12px;
+    }
+
+    .field svg {
+      position: absolute;
+      left: 13px;
+      top: 50%;
+      width: 18px;
+      height: 18px;
+      color: var(--muted);
+      transform: translateY(-50%);
+      pointer-events: none;
+    }
+
+    .folder-button {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      padding: 0 14px;
+      cursor: pointer;
+      white-space: nowrap;
+    }
+
+    .folder-button:hover,
+    .field input:focus,
+    .field select:focus {
+      border-color: rgba(255, 111, 145, 0.55);
+      background: rgba(255, 255, 255, 0.10);
+    }
+
+    .folder-button svg {
+      width: 18px;
+      height: 18px;
+    }
+
+    .hidden-input {
+      position: absolute;
+      width: 1px;
+      height: 1px;
+      opacity: 0;
+      pointer-events: none;
+    }
+
+    .gallery {
+      column-count: 5;
+      column-gap: 14px;
+      padding-top: 16px;
+    }
+
+    .card {
+      position: relative;
+      display: inline-block;
+      width: 100%;
+      margin: 0 0 14px;
+      overflow: hidden;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: #181b26;
+      box-shadow: 0 16px 40px rgba(0, 0, 0, 0.24);
+      break-inside: avoid;
+      cursor: zoom-in;
+    }
+
+    .card img {
+      display: block;
+      width: 100%;
+      height: auto;
+      min-height: 180px;
+      object-fit: cover;
+      background: #191b24;
+      transition: transform 220ms ease, filter 220ms ease;
+    }
+
+    .card:hover img {
+      transform: scale(1.025);
+      filter: saturate(1.05);
+    }
+
+    .meta {
+      position: absolute;
+      inset: auto 0 0;
+      display: flex;
+      justify-content: space-between;
+      gap: 10px;
+      padding: 28px 12px 12px;
+      background: linear-gradient(transparent, rgba(0, 0, 0, 0.78));
+      color: #fff;
+      opacity: 0;
+      transition: opacity 180ms ease;
+    }
+
+    .card:hover .meta,
+    .card:focus-within .meta {
+      opacity: 1;
+    }
+
+    .name {
+      min-width: 0;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+      font-weight: 700;
+    }
+
+    .date {
+      flex: 0 0 auto;
+      color: rgba(255, 255, 255, 0.76);
+      font-size: 0.78rem;
+    }
+
+    .empty {
+      display: none;
+      margin-top: 16px;
+      padding: 34px;
+      border-radius: 8px;
+      text-align: center;
+    }
+
+    .empty.visible {
+      display: block;
+    }
+
+    .empty h2 {
+      margin: 0;
+      font-size: 1.4rem;
+    }
+
+    .empty p {
+      max-width: 620px;
+      margin: 10px auto 0;
+      color: var(--muted);
+      line-height: 1.6;
+    }
+
+    dialog {
+      width: min(1100px, calc(100% - 28px));
+      max-height: calc(100vh - 28px);
+      padding: 0;
+      overflow: hidden;
+      border-radius: 8px;
+      color: var(--text);
+    }
+
+    dialog::backdrop {
+      background: rgba(0, 0, 0, 0.72);
+      backdrop-filter: blur(6px);
+    }
+
+    .viewer {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) 260px;
+      max-height: calc(100vh - 28px);
+    }
+
+    .viewer-image {
+      display: grid;
+      place-items: center;
+      min-height: 60vh;
+      background: #050609;
+    }
+
+    .viewer-image img {
+      display: block;
+      max-width: 100%;
+      max-height: calc(100vh - 28px);
+      object-fit: contain;
+    }
+
+    .viewer-detail {
+      padding: 18px;
+      border-left: 1px solid var(--line);
+      background: var(--panel-strong);
+    }
+
+    .viewer-detail h2 {
+      margin: 0;
+      overflow-wrap: anywhere;
+      font-size: 1.05rem;
+    }
+
+    .detail-list {
+      display: grid;
+      gap: 12px;
+      margin-top: 18px;
+    }
+
+    .detail-item {
+      padding: 12px;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: rgba(255, 255, 255, 0.05);
+    }
+
+    .detail-item span {
+      display: block;
+      color: var(--muted);
+      font-size: 0.74rem;
+      text-transform: uppercase;
+    }
+
+    .detail-item strong {
+      display: block;
+      margin-top: 5px;
+      overflow-wrap: anywhere;
+      font-size: 0.95rem;
+    }
+
+    .close-button {
+      width: 100%;
+      height: 42px;
+      margin-top: 18px;
+      border: 0;
+      border-radius: 8px;
+      background: var(--accent);
+      color: #1b0710;
+      font-weight: 800;
+      cursor: pointer;
+    }
+
+    .download-button {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      width: 100%;
+      height: 42px;
+      margin-top: 18px;
+      border: 1px solid rgba(62, 215, 181, 0.45);
+      border-radius: 8px;
+      background: rgba(62, 215, 181, 0.13);
+      color: var(--text);
+      font-weight: 800;
+      text-decoration: none;
+    }
+
+    .download-button:hover {
+      background: rgba(62, 215, 181, 0.20);
+    }
+
+    .download-button svg {
+      width: 18px;
+      height: 18px;
+    }
+
+    .close-button {
+      margin-top: 10px;
+    }
+
+    @media (max-width: 1180px) {
+      .gallery {
+        column-count: 4;
+      }
+    }
+
+    @media (max-width: 920px) {
+      .hero {
+        grid-template-columns: 1fr;
+      }
+
+      .controls {
+        grid-template-columns: 1fr 1fr;
+      }
+
+      .gallery {
+        column-count: 3;
+      }
+
+      .viewer {
+        grid-template-columns: 1fr;
+      }
+
+      .viewer-detail {
+        border-top: 1px solid var(--line);
+        border-left: 0;
+      }
+    }
+
+    @media (max-width: 640px) {
+      .app {
+        width: min(100% - 20px, 1440px);
+        padding-top: 10px;
+      }
+
+      .topbar {
+        position: static;
+      }
+
+      .hero,
+      .controls {
+        padding: 14px;
+      }
+
+      .controls,
+      .stats {
+        grid-template-columns: 1fr;
+      }
+
+      .gallery {
+        column-count: 2;
+        column-gap: 10px;
+      }
+
+      .card {
+        margin-bottom: 10px;
+      }
+    }
+  </style>
 </head>
 <body>
-    <h1>AI Girlfriend</h1>
-    <p>This is a project to create an AI girlfriend using Python and machine learning.</p>
-    
+  <main class="app">
+    <section class="topbar">
+      <div class="hero">
+        <div>
+          <h1>AI Girlfriend Gallery</h1>
+          <p class="subtitle">A clean visual library for every PNG in <strong>generated_images</strong>, with search, character filters, detail view, and lazy loading for large batches.</p>
+        </div>
+        <div class="stats" aria-label="Gallery statistics">
+          <div class="stat">
+            <strong id="totalCount">0</strong>
+            <span>Total PNGs</span>
+          </div>
+          <div class="stat">
+            <strong id="shownCount">0</strong>
+            <span>Showing</span>
+          </div>
+          <div class="stat">
+            <strong id="characterCount">0</strong>
+            <span>Names</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="controls" aria-label="Gallery controls">
+        <label class="field" aria-label="Search images">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <circle cx="11" cy="11" r="7"></circle>
+            <path d="m20 20-3.5-3.5"></path>
+          </svg>
+          <input id="searchInput" type="search" placeholder="Search file or name">
+        </label>
+
+        <label class="field">
+          <select id="nameFilter" aria-label="Filter by name">
+            <option value="all">All names</option>
+          </select>
+        </label>
+
+        <label class="field">
+          <select id="sortSelect" aria-label="Sort images">
+            <option value="newest">Newest first</option>
+            <option value="oldest">Oldest first</option>
+            <option value="name">Name A-Z</option>
+          </select>
+        </label>
+
+        <label class="field">
+          <select id="sizeSelect" aria-label="Tile size">
+            <option value="comfortable">Comfortable</option>
+            <option value="compact">Compact</option>
+            <option value="large">Large</option>
+          </select>
+        </label>
+
+        <label class="folder-button" for="folderInput" title="Use this if your browser cannot read the folder automatically">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M3 7.5A2.5 2.5 0 0 1 5.5 5H10l2 2h6.5A2.5 2.5 0 0 1 21 9.5v7A2.5 2.5 0 0 1 18.5 19h-13A2.5 2.5 0 0 1 3 16.5z"></path>
+          </svg>
+          Choose folder
+        </label>
+        <input class="hidden-input" id="folderInput" type="file" accept="image/png" webkitdirectory multiple>
+      </div>
+    </section>
+
+    <section id="gallery" class="gallery" aria-live="polite"></section>
+
+    <section id="emptyState" class="empty">
+      <h2>No PNG images loaded yet</h2>
+      <p>Serve this folder with a local web server so the page can read <strong>generated_images</strong> automatically, or open this file directly and use <strong>Choose folder</strong>.</p>
+    </section>
+  </main>
+
+  <dialog id="viewerDialog">
+    <div class="viewer">
+      <div class="viewer-image">
+        <img id="viewerImg" alt="">
+      </div>
+      <aside class="viewer-detail">
+        <h2 id="viewerTitle"></h2>
+        <div class="detail-list">
+          <div class="detail-item">
+            <span>Character</span>
+            <strong id="viewerName"></strong>
+          </div>
+          <div class="detail-item">
+            <span>File</span>
+            <strong id="viewerFile"></strong>
+          </div>
+          <div class="detail-item">
+            <span>Created</span>
+            <strong id="viewerDate"></strong>
+          </div>
+          <div class="detail-item">
+            <span>Source</span>
+            <strong id="viewerSource"></strong>
+          </div>
+        </div>
+        <a class="download-button" id="downloadImage" href="#" download>
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M12 3v12"></path>
+            <path d="m7 10 5 5 5-5"></path>
+            <path d="M5 21h14"></path>
+          </svg>
+          Download image
+        </a>
+        <button class="close-button" id="closeViewer" type="button">Close</button>
+      </aside>
+    </div>
+  </dialog>
+
+  <script>
+    const folderPath = "generated_images/";
+    const gallery = document.querySelector("#gallery");
+    const emptyState = document.querySelector("#emptyState");
+    const searchInput = document.querySelector("#searchInput");
+    const nameFilter = document.querySelector("#nameFilter");
+    const sortSelect = document.querySelector("#sortSelect");
+    const sizeSelect = document.querySelector("#sizeSelect");
+    const folderInput = document.querySelector("#folderInput");
+    const totalCount = document.querySelector("#totalCount");
+    const shownCount = document.querySelector("#shownCount");
+    const characterCount = document.querySelector("#characterCount");
+    const viewerDialog = document.querySelector("#viewerDialog");
+    const viewerImg = document.querySelector("#viewerImg");
+    const viewerTitle = document.querySelector("#viewerTitle");
+    const viewerName = document.querySelector("#viewerName");
+    const viewerFile = document.querySelector("#viewerFile");
+    const viewerDate = document.querySelector("#viewerDate");
+    const viewerSource = document.querySelector("#viewerSource");
+    const downloadImage = document.querySelector("#downloadImage");
+    const closeViewer = document.querySelector("#closeViewer");
+
+    let images = [];
+    let visibleImages = [];
+
+    function characterFromFile(fileName) {
+      return fileName.replace(/\.png$/i, "").split("_")[0] || "Unknown";
+    }
+
+    function timestampFromFile(fileName) {
+      const match = fileName.match(/_(\d{10})/);
+      if (!match) return null;
+      const stamp = Number(match[1]);
+      return Number.isFinite(stamp) ? new Date(stamp * 1000) : null;
+    }
+
+    function formatDate(date) {
+      if (!date || Number.isNaN(date.getTime())) return "Unknown";
+      return new Intl.DateTimeFormat(undefined, {
+        year: "numeric",
+        month: "short",
+        day: "numeric",
+        hour: "2-digit",
+        minute: "2-digit"
+      }).format(date);
+    }
+
+    function imageRecord(fileName, url, source = "generated_images") {
+      const cleanName = decodeURIComponent(fileName).replace(/^.*[\\/]/, "");
+      return {
+        fileName: cleanName,
+        character: characterFromFile(cleanName),
+        date: timestampFromFile(cleanName),
+        url,
+        source
+      };
+    }
+
+    async function loadFromDirectoryListing() {
+      try {
+        const response = await fetch(folderPath, { cache: "no-store" });
+        if (!response.ok) throw new Error("Folder listing unavailable");
+        const html = await response.text();
+        const doc = new DOMParser().parseFromString(html, "text/html");
+        const fileNames = [...doc.querySelectorAll("a")]
+          .map((link) => link.getAttribute("href") || "")
+          .map((href) => href.split("?")[0].split("#")[0])
+          .filter((href) => /\.png$/i.test(href))
+          .map((href) => decodeURIComponent(href.replace(/^.*\//, "")));
+
+        if (!fileNames.length) throw new Error("No PNG files in listing");
+        setImages(fileNames.map((fileName) => imageRecord(fileName, folderPath + encodeURIComponent(fileName))));
+      } catch (error) {
+        setImages([]);
+      }
+    }
+
+    function setImages(nextImages) {
+      images.forEach((item) => {
+        if (item.source === "selected folder") URL.revokeObjectURL(item.url);
+      });
+
+      const unique = new Map();
+      nextImages.forEach((item) => {
+        if (!unique.has(item.fileName)) unique.set(item.fileName, item);
+      });
+      images = [...unique.values()];
+      populateNameFilter();
+      applyFilters();
+    }
+
+    function populateNameFilter() {
+      const selected = nameFilter.value;
+      const names = [...new Set(images.map((item) => item.character))].sort((a, b) => a.localeCompare(b));
+      nameFilter.replaceChildren(new Option("All names", "all"), ...names.map((name) => new Option(name, name)));
+      nameFilter.value = names.includes(selected) ? selected : "all";
+      totalCount.textContent = images.length;
+      characterCount.textContent = names.length;
+    }
+
+    function applyFilters() {
+      const query = searchInput.value.trim().toLowerCase();
+      const activeName = nameFilter.value;
+      const sortMode = sortSelect.value;
+
+      visibleImages = images
+        .filter((item) => activeName === "all" || item.character === activeName)
+        .filter((item) => {
+          if (!query) return true;
+          return item.fileName.toLowerCase().includes(query) || item.character.toLowerCase().includes(query);
+        })
+        .sort((a, b) => {
+          if (sortMode === "name") return a.fileName.localeCompare(b.fileName);
+          const aTime = a.date ? a.date.getTime() : 0;
+          const bTime = b.date ? b.date.getTime() : 0;
+          return sortMode === "oldest" ? aTime - bTime : bTime - aTime;
+        });
+
+      shownCount.textContent = visibleImages.length;
+      renderGallery();
+    }
+
+    function renderGallery() {
+      gallery.innerHTML = "";
+      const size = sizeSelect.value;
+      gallery.style.columnCount = "";
+      if (size === "compact") gallery.style.columnWidth = "180px";
+      if (size === "comfortable") gallery.style.columnWidth = "230px";
+      if (size === "large") gallery.style.columnWidth = "310px";
+
+      const fragment = document.createDocumentFragment();
+      visibleImages.forEach((item, index) => {
+        const card = document.createElement("button");
+        card.className = "card";
+        card.type = "button";
+        card.addEventListener("click", () => openViewer(item));
+
+        const img = document.createElement("img");
+        img.src = item.url;
+        img.alt = item.fileName;
+        img.loading = index < 12 ? "eager" : "lazy";
+
+        const meta = document.createElement("span");
+        meta.className = "meta";
+        const name = document.createElement("span");
+        name.className = "name";
+        name.textContent = item.character;
+        const date = document.createElement("span");
+        date.className = "date";
+        date.textContent = formatDate(item.date);
+        meta.append(name, date);
+
+        card.append(img, meta);
+        fragment.append(card);
+      });
+
+      gallery.append(fragment);
+      emptyState.classList.toggle("visible", images.length === 0 || visibleImages.length === 0);
+    }
+
+    function openViewer(item) {
+      viewerImg.src = item.url;
+      viewerImg.alt = item.fileName;
+      viewerTitle.textContent = item.fileName;
+      viewerName.textContent = item.character;
+      viewerFile.textContent = item.fileName;
+      viewerDate.textContent = formatDate(item.date);
+      viewerSource.textContent = item.source;
+      downloadImage.href = item.url;
+      downloadImage.download = item.fileName;
+      viewerDialog.showModal();
+    }
+
+    folderInput.addEventListener("change", (event) => {
+      const files = [...event.target.files].filter((file) => file.name.toLowerCase().endsWith(".png"));
+      setImages(files.map((file) => imageRecord(file.name, URL.createObjectURL(file), "selected folder")));
+    });
+
+    [searchInput, nameFilter, sortSelect, sizeSelect].forEach((control) => {
+      control.addEventListener("input", applyFilters);
+    });
+
+    closeViewer.addEventListener("click", () => viewerDialog.close());
+    viewerDialog.addEventListener("click", (event) => {
+      if (event.target === viewerDialog) viewerDialog.close();
+    });
+    window.addEventListener("keydown", (event) => {
+      if (event.key === "Escape" && viewerDialog.open) viewerDialog.close();
+    });
+
+    loadFromDirectoryListing();
+  </script>
 </body>
 </html>
