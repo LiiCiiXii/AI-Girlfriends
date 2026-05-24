@@ -822,7 +822,7 @@ def build_random_image_prompt(character, request_text=""):
         f"adult anime woman, age {age} or older",
         # f"adult anime woman, age {age} or older, non nude",
         "4k resolution anime portrait filled with vibrant colors and intricate details",
-        "full body, upper body crop, or close-up portrait composition",
+        "full body close-up composition",
         rng.choice(ETHNICITY_OPTIONS),
         rng.choice(APPEARANCE_OPTIONS),
         rng.choice(OUTFIT_OPTIONS),
