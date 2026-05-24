@@ -572,6 +572,7 @@
 
   <script>
     const folderPath = "generated_images/";
+    const manifestPath = folderPath + "manifest.json";
     const gallery = document.querySelector("#gallery");
     const emptyState = document.querySelector("#emptyState");
     const searchInput = document.querySelector("#searchInput");
@@ -628,6 +629,16 @@
       };
     }
 
+    async function loadFromManifest() {
+      const response = await fetch(manifestPath, { cache: "no-store" });
+      if (!response.ok) throw new Error("Manifest unavailable");
+      const fileNames = await response.json();
+      if (!Array.isArray(fileNames) || !fileNames.length) throw new Error("No PNG files in manifest");
+      setImages(fileNames
+        .filter((fileName) => typeof fileName === "string" && /\.png$/i.test(fileName))
+        .map((fileName) => imageRecord(fileName, folderPath + encodeURIComponent(fileName))));
+    }
+
     async function loadFromDirectoryListing() {
       try {
         const response = await fetch(folderPath, { cache: "no-store" });
@@ -644,6 +655,14 @@
         setImages(fileNames.map((fileName) => imageRecord(fileName, folderPath + encodeURIComponent(fileName))));
       } catch (error) {
         setImages([]);
+      }
+    }
+
+    async function loadImages() {
+      try {
+        await loadFromManifest();
+      } catch (error) {
+        await loadFromDirectoryListing();
       }
     }
 
@@ -760,7 +779,7 @@
       if (event.key === "Escape" && viewerDialog.open) viewerDialog.close();
     });
 
-    loadFromDirectoryListing();
+    loadImages();
   </script>
 </body>
 </html>
