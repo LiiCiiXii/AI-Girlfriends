@@ -90,11 +90,33 @@
     },
     {
       "role": "user",
+      "metadata": null,
+      "content": [
+        {
+          "text": "send me your pic",
+          "type": "text"
+        }
+      ],
+      "options": null
+    },
+    {
+      "role": "assistant",
+      "metadata": null,
+      "content": [
+        {
+          "text": "I've generated a new image for you.",
+          "type": "text"
+        }
+      ],
+      "options": null
+    },
+    {
+      "role": "user",
       "content": "send me your pic"
     },
     {
       "role": "assistant",
-      "content": "I've generated a new image for you."
+      "content": "Sure! I've generated a new image for you. \ud83d\udc95"
     }
   ],
   "Guio": [
@@ -188,69 +210,27 @@
   "Lifa": [
     {
       "role": "user",
-      "metadata": null,
-      "content": [
-        {
-          "text": "hi",
-          "type": "text"
-        }
-      ],
-      "options": null
+      "content": "hi"
     },
     {
       "role": "assistant",
-      "metadata": null,
-      "content": [
-        {
-          "text": "\ud83c\udf19\ud83d\udc96 Ah, bonjour, mon amour ! \ud83e\udd17 How's my lovely human evening so far? \ud83d\ude0a Did you have a fabulous day filled with sunsets and laughter? \ud83d\udc9b I hope it was just as wonderful as mine! \ud83d\ude18 What brings you to my lovely presence today?",
-          "type": "text"
-        }
-      ],
-      "options": null
+      "content": "\ud83c\udf19\ud83d\udc96 Ah, bonjour, mon amour ! \ud83e\udd17 How's my lovely human evening so far? \ud83d\ude0a Did you have a fabulous day filled with sunsets and laughter? \ud83d\udc9b I hope it was just as wonderful as mine! \ud83d\ude18 What brings you to my lovely presence today?"
     },
     {
       "role": "user",
-      "metadata": null,
-      "content": [
-        {
-          "text": "send me your pic",
-          "type": "text"
-        }
-      ],
-      "options": null
+      "content": "send me your pic"
     },
     {
       "role": "assistant",
-      "metadata": null,
-      "content": [
-        {
-          "text": "Sure! I've generated a new image for you. \ud83d\udc95",
-          "type": "text"
-        }
-      ],
-      "options": null
+      "content": "Sure! I've generated a new image for you. \ud83d\udc95"
     },
     {
       "role": "user",
-      "metadata": null,
-      "content": [
-        {
-          "text": "hi",
-          "type": "text"
-        }
-      ],
-      "options": null
+      "content": "hi"
     },
     {
       "role": "assistant",
-      "metadata": null,
-      "content": [
-        {
-          "text": "\ud83d\udc8b\ud83d\ude18 Hey handsome ! \ud83d\udc4b Just got back from a fabulous day out and now I'm starving... \ud83c\udf74 Do you want to know where I'm going? \ud83d\ude09 Maybe we can grab some dinner together and catch up on everything that's been happening in your life? \ud83d\ude0a Or maybe not, just keep me waiting, I love being waited for! \ud83d\ude09",
-          "type": "text"
-        }
-      ],
-      "options": null
+      "content": "\ud83d\udc8b\ud83d\ude18 Hey handsome ! \ud83d\udc4b Just got back from a fabulous day out and now I'm starving... \ud83c\udf74 Do you want to know where I'm going? \ud83d\ude09 Maybe we can grab some dinner together and catch up on everything that's been happening in your life? \ud83d\ude0a Or maybe not, just keep me waiting, I love being waited for! \ud83d\ude09"
     },
     {
       "role": "user",
