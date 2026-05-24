@@ -47,8 +47,7 @@ DEFAULT_IMAGE_PROMPT = (
     "khmer girl with long black hair and warm brown eyes",
 )
 NEGATIVE_IMAGE_PROMPT = (
-    "child, teen, underage, loli, explicit, porn, sex act, bad anatomy, bad hands, "
-    "extra fingers, missing fingers, blurry, low quality, watermark, text, logo"
+    "child "
 )
 image_pipe = None
 
@@ -784,24 +783,52 @@ def get_scene_details(message):
             "cozy bedroom, romantic lighting",
             "wet skin white girl pink pussy with glistening wetness and detailed texture",
         )
+    if "nude" in text:
+        return (
+            "sucking pussy on sofa with blanket",
+            "nude with body paint and glitter",
+            "cozy bedroom, romantic lighting",
+            "wet skin white girl pink pussy with glistening wetness and detailed texture",
+        )
     return get_activity_scene(message), None, None
 
+
+# def build_random_image_prompt(character, request_text=""):
+#     char = CHARACTERS[character]
+#     rng = random.Random(f"{character}-{request_text}-{time.time()}")
+#     age = max(int(char.get("age", 19) or 19), 19)
+#     activity, required_outfit, required_background = get_scene_details(request_text)
+#     parts = [
+#         f"adult anime woman, age {age} or older, non nude",
+#         activity,
+#         "4k resolution anime portrait",
+#         rng.choice(SAFE_ETHNICITY_OPTIONS),
+#         rng.choice(SAFE_APPEARANCE_OPTIONS),
+#         required_outfit or rng.choice(SAFE_OUTFIT_OPTIONS),
+#         required_background or rng.choice(SAFE_BACKGROUND_OPTIONS),
+#         rng.choice(SAFE_POSE_OPTIONS),
+#         rng.choice(SAFE_STYLE_OPTIONS),
+#         "curvy figure, flirty expression, beautiful face",
+#         "detailed eyes, soft skin shading, cinematic lighting, high quality",
+#     ]
+#     return ", ".join(parts)
 
 def build_random_image_prompt(character, request_text=""):
     char = CHARACTERS[character]
     rng = random.Random(f"{character}-{request_text}-{time.time()}")
     age = max(int(char.get("age", 19) or 19), 19)
-    activity, required_outfit, required_background = get_scene_details(request_text)
+    
     parts = [
-        f"adult anime woman, age {age} or older, non nude",
-        activity,
-        "4k resolution anime portrait",
-        rng.choice(SAFE_ETHNICITY_OPTIONS),
-        rng.choice(SAFE_APPEARANCE_OPTIONS),
-        required_outfit or rng.choice(SAFE_OUTFIT_OPTIONS),
-        required_background or rng.choice(SAFE_BACKGROUND_OPTIONS),
-        rng.choice(SAFE_POSE_OPTIONS),
-        rng.choice(SAFE_STYLE_OPTIONS),
+        f"adult anime woman, age {age} or older",
+        # f"adult anime woman, age {age} or older, non nude",
+        "4k resolution anime portrait filled with vibrant colors and intricate details",
+        "full body, upper body crop, or close-up portrait composition",
+        rng.choice(ETHNICITY_OPTIONS),
+        rng.choice(APPEARANCE_OPTIONS),
+        rng.choice(OUTFIT_OPTIONS),
+        rng.choice(BACKGROUND_OPTIONS),
+        rng.choice(POSE_OPTIONS),
+        rng.choice(STYLE_OPTIONS),
         "curvy figure, flirty expression, beautiful face",
         "detailed eyes, soft skin shading, cinematic lighting, high quality",
     ]

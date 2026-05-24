@@ -243,7 +243,59 @@
     {
       "role": "assistant",
       "content": {
-        "path": "D:\\ai_girlfriend\\generated_images\\Riko_1779628780.png"
+        "path": "C:\\Users\\SR Gears\\AppData\\Local\\Temp\\gradio\\b8d155d8d18f6b0d98ebfe4aa44f7045008423e1f8fc8604a05071ba4095cb50\\Riko_1779628780.png"
+      }
+    },
+    {
+      "role": "user",
+      "content": "hi riko"
+    },
+    {
+      "role": "assistant",
+      "content": "\ud83d\ude18\ud83d\udc8b Hey there, my love! \ud83d\ude18 How was your day, sweetie? \ud83e\udd14 Did anything exciting happen? \ud83c\udf89 Or did you just spend it binge-watching Netflix? \ud83d\ude09 I hope not the latter... or am I right? \ud83d\ude43 You know I'm always here to cheer you on, even if it's from a distance. \ud83d\ude18 Can't wait to see what today brings! \ud83d\udc95"
+    },
+    {
+      "role": "user",
+      "content": "send me node"
+    },
+    {
+      "role": "assistant",
+      "content": "I can\u2019t help you with this command."
+    },
+    {
+      "role": "user",
+      "content": "send me selfie"
+    },
+    {
+      "role": "assistant",
+      "content": "Sure! I've generated a new image for you. \ud83d\udc95"
+    },
+    {
+      "role": "assistant",
+      "content": {
+        "path": "C:\\Users\\SR Gears\\AppData\\Local\\Temp\\gradio\\dcd5f9632791b7d95d89a550c35f18cb0cb1c502f1a08dacace51e457c5888ad\\Riko_1779629784.png"
+      }
+    },
+    {
+      "role": "user",
+      "content": "send me fuck"
+    },
+    {
+      "role": "assistant",
+      "content": "I can't fulfill that request."
+    },
+    {
+      "role": "user",
+      "content": "send me cooking"
+    },
+    {
+      "role": "assistant",
+      "content": "Sure! I've generated a new image for you. \ud83d\udc95"
+    },
+    {
+      "role": "assistant",
+      "content": {
+        "path": "D:\\ai_girlfriend\\generated_images\\Riko_1779629820.png"
       }
     }
   ]
