@@ -13,6 +13,10 @@ CHAT_FILE = os.path.join("app_data", "chat_history.json")
 GENERATED_DIR = "generated_images"
 IMAGE_MODEL_ID = os.getenv("IMAGE_MODEL_ID", "Lykon/dreamshaper-8")
 ALLOW_MODEL_DOWNLOAD = os.getenv("ALLOW_MODEL_DOWNLOAD", "0") == "1"
+IMAGE_WIDTH = int(os.getenv("IMAGE_WIDTH", "384"))
+IMAGE_HEIGHT = int(os.getenv("IMAGE_HEIGHT", "576"))
+IMAGE_STEPS = int(os.getenv("IMAGE_STEPS", "12"))
+IMAGE_GUIDANCE = float(os.getenv("IMAGE_GUIDANCE", "6.0"))
 DEFAULT_IMAGE_PROMPT = (
     "adult sexy anime woman, age 19 or older, glamorous girlfriend portrait, "
     "flirty smile, long hair, stylish bikini outfit, beach background, soft lighting, "
@@ -43,9 +47,87 @@ DEFAULT_IMAGE_PROMPT = (
     "khmer girl with long black hair and warm brown eyes",
 )
 NEGATIVE_IMAGE_PROMPT = (
-    "child"
+    "child, teen, underage, loli, explicit, porn, sex act, bad anatomy, bad hands, "
+    "extra fingers, missing fingers, blurry, low quality, watermark, text, logo"
 )
 image_pipe = None
+
+ACTIVITY_SCENES = {
+    "selfie": "taking a cute mirror selfie, flirty smile, cozy bedroom",
+    "photo": "posing for a glamorous girlfriend photo, flirty smile, soft lighting",
+    "picture": "posing for a glamorous girlfriend photo, flirty smile, soft lighting",
+    "pic": "posing for a glamorous girlfriend photo, flirty smile, soft lighting",
+    "eating": "eating dessert at a cute cafe, playful smile, leaning toward camera",
+    "eat": "eating dessert at a cute cafe, playful smile, leaning toward camera",
+    "cooking": "cooking dinner in a bright kitchen, holding a mixing bowl, playful smile",
+    "cook": "cooking dinner in a bright kitchen, holding a mixing bowl, playful smile",
+    "drinking": "drinking iced coffee at a cafe, flirty smile, looking at camera",
+    "sleeping": "relaxing on a sofa with a blanket, sleepy smile, cozy pose",
+    "what are you doing": "taking a casual selfie while relaxing at home, flirty smile",
+    "what r u doing": "taking a casual selfie while relaxing at home, flirty smile",
+    "wyd": "taking a casual selfie while relaxing at home, flirty smile",
+}
+
+SAFE_ETHNICITY_OPTIONS = [
+    "Khmer Cambodian woman",
+    "Japanese woman",
+    "Korean woman",
+    "Chinese woman",
+    "white Caucasian woman",
+    "Russian woman",
+]
+
+SAFE_APPEARANCE_OPTIONS = [
+    "long black hair and amber eyes",
+    "wavy brunette hair and soft brown eyes",
+    "silver hair and violet eyes",
+    "pink hair and blue eyes",
+    "blonde twin tails and green eyes",
+    "short dark bob haircut and smoky eyes",
+    "long red hair and gold eyes",
+    "tan skin with long chocolate hair",
+]
+
+SAFE_OUTFIT_OPTIONS = [
+    "tiny black bikini with gold jewelry, non nude",
+    "red string bikini with thigh straps, non nude",
+    "white lace swimsuit, non nude",
+    "off-shoulder crop top and micro skirt",
+    "sheer beach cover-up over a bikini, non nude",
+    "glossy fitted bodysuit, non nude",
+    "low-cut cocktail dress with high slit",
+    "bunny-girl inspired leotard, non nude",
+]
+
+SAFE_BACKGROUND_OPTIONS = [
+    "bright kitchen",
+    "cozy bedroom with soft romantic lighting",
+    "sunny cafe",
+    "tropical beach with palm trees",
+    "neon city rooftop at night",
+    "flower garden with glowing evening light",
+    "angkor wat temple background with sunrise lighting",
+]
+
+SAFE_POSE_OPTIONS = [
+    "seductive confident pose, hand in hair",
+    "playful wink, leaning toward camera",
+    "glamorous model pose, arched back",
+    "sitting pose with crossed legs",
+    "over-the-shoulder look, teasing smile",
+    "standing full body pose, one hand on hip",
+    "cute flirty smile, dynamic hair movement",
+]
+
+SAFE_STYLE_OPTIONS = [
+    "high detail anime illustration",
+    "beautiful visual novel key art",
+    "ultra high quality waifu style",
+    "4k anime portrait",
+    "glossy anime pin-up style",
+    "soft painterly anime rendering",
+    "vibrant waifu art, clean linework",
+]
 
 ETHNICITY_OPTIONS = [
     "white Caucasian girl",
@@ -408,18 +490,73 @@ else:
     }
 
 
-def normalize_chat_message(message):
+def get_message_text(message):
     if isinstance(message, dict):
         content = message.get("content", "")
-        if isinstance(content, list):
-            text_parts = []
-            for part in content:
-                if isinstance(part, dict):
-                    text_parts.append(part.get("text", ""))
-                else:
-                    text_parts.append(str(part))
-            content = "".join(text_parts)
-        return {"role": message.get("role", "user"), "content": str(content)}
+    else:
+        content = message
+
+    if isinstance(content, list):
+        text_parts = []
+        for part in content:
+            if isinstance(part, dict):
+                if "text" in part:
+                    text_parts.append(str(part.get("text", "")))
+                elif part.get("type") == "text":
+                    text_parts.append(str(part.get("text", "")))
+            elif isinstance(part, str):
+                text_parts.append(part)
+        return "".join(text_parts)
+
+    if isinstance(content, dict):
+        if "text" in content:
+            return str(content.get("text", ""))
+        if content.get("type") == "text":
+            return str(content.get("text", ""))
+        return ""
+
+    return str(content) if content is not None else ""
+
+
+def normalize_message_content(content):
+    if isinstance(content, list):
+        normalized_parts = []
+        for part in content:
+            normalized = normalize_message_content(part)
+            if normalized not in ("", None):
+                normalized_parts.append(normalized)
+        if not normalized_parts:
+            return ""
+        if len(normalized_parts) == 1:
+            return normalized_parts[0]
+        return normalized_parts
+
+    if isinstance(content, dict):
+        if "path" in content:
+            return {"path": content["path"]}
+        if "file" in content and isinstance(content["file"], dict):
+            path = content["file"].get("path")
+            if path:
+                return {"path": path}
+        if content.get("type") == "file" and isinstance(content.get("file"), dict):
+            path = content["file"].get("path")
+            if path:
+                return {"path": path}
+        if "text" in content:
+            return str(content.get("text", ""))
+        if content.get("type") == "text":
+            return str(content.get("text", ""))
+        return ""
+
+    return str(content) if content is not None else ""
+
+
+def normalize_chat_message(message):
+    if isinstance(message, dict):
+        return {
+            "role": message.get("role", "user"),
+            "content": normalize_message_content(message.get("content", "")),
+        }
     if isinstance(message, (list, tuple)) and len(message) == 2:
         return {"role": "user", "content": str(message[0])} if message[0] else {"role": "assistant", "content": str(message[1])}
     return {"role": "user", "content": str(message)}
@@ -566,57 +703,110 @@ def get_image_pipe():
     )
 
     if device == "cuda":
-        image_pipe.enable_model_cpu_offload()
         image_pipe.enable_attention_slicing()
         image_pipe.enable_vae_slicing()
+        try:
+            image_pipe.enable_sequential_cpu_offload()
+        except Exception:
+            image_pipe = image_pipe.to(device)
     else:
         image_pipe = image_pipe.to(device)
 
     return image_pipe
 
-def build_random_image_prompt(character):
+def get_activity_scene(message):
+    text = (message or "").lower()
+    for trigger, scene in ACTIVITY_SCENES.items():
+        if trigger in text:
+            return scene
+    cleaned = re.sub(r"[^a-zA-Z0-9 ,_-]+", " ", message or "").strip()
+    if cleaned:
+        return cleaned[:160]
+    return "taking a cute casual selfie, cozy room, warm smile"
+
+
+def get_scene_details(message):
+    text = (message or "").lower()
+    if not text.strip():
+        return (
+            "anime beach selfie portrait, upper body crop",
+            "cute red bikini top, covered chest",
+            "tropical beach, palm trees",
+        )
+    if "cook" in text:
+        return (
+            "cooking in bright kitchen, holding mixing bowl",
+            "cute apron, off-shoulder crop top, short skirt",
+            "modern kitchen counter",
+        )
+    if "eat" in text:
+        return (
+            "eating dessert at cute cafe",
+            "low-cut summer dress",
+            "sunny cafe table",
+        )
+    if "drink" in text:
+        return (
+            "drinking iced coffee at cafe",
+            "off-shoulder crop top, micro skirt",
+            "sunny cafe table",
+        )
+    if "sleep" in text:
+        return (
+            "relaxing on sofa with blanket",
+            "soft fitted loungewear",
+            "cozy bedroom, romantic lighting",
+        )
+    return get_activity_scene(message), None, None
+
+
+def build_random_image_prompt(character, request_text=""):
     char = CHARACTERS[character]
-    rng = random.Random(f"{character}-{time.time()}")
+    rng = random.Random(f"{character}-{request_text}-{time.time()}")
+    age = max(int(char.get("age", 19) or 19), 19)
+    activity, required_outfit, required_background = get_scene_details(request_text)
     parts = [
-        # "adult sexy anime woman, age 19 or older, non nude",
-        # "adult sexy anime woman, age 19 or older, nude",
-        "adult sexy anime woman, age 19 or older",
-        "white Caucasian girl",
+        f"adult anime woman, age {age} or older, non nude",
+        activity,
         "4k resolution anime portrait",
-        rng.choice(ETHNICITY_OPTIONS),
-        rng.choice(APPEARANCE_OPTIONS),
-        rng.choice(OUTFIT_OPTIONS),
-        rng.choice(BACKGROUND_OPTIONS),
-        rng.choice(POSE_OPTIONS),
-        rng.choice(STYLE_OPTIONS),
+        rng.choice(SAFE_ETHNICITY_OPTIONS),
+        rng.choice(SAFE_APPEARANCE_OPTIONS),
+        required_outfit or rng.choice(SAFE_OUTFIT_OPTIONS),
+        required_background or rng.choice(SAFE_BACKGROUND_OPTIONS),
+        rng.choice(SAFE_POSE_OPTIONS),
+        rng.choice(SAFE_STYLE_OPTIONS),
         "curvy figure, flirty expression, beautiful face",
         "detailed eyes, soft skin shading, cinematic lighting, high quality",
     ]
     return ", ".join(parts)
 
-def generate_with_image_model(character):
+def generate_with_image_model(character, request_text="", update_profile=True):
     pipe = get_image_pipe()
     import torch
 
-    using_cuda = torch.cuda.is_available()
-    prompt = build_random_image_prompt(character)
-    image = pipe(
-        prompt=prompt,
-        negative_prompt=NEGATIVE_IMAGE_PROMPT,
-        width=512 if using_cuda else 384,
-        height=768 if using_cuda else 576,
-        num_inference_steps=28 if using_cuda else 12,
-        guidance_scale=7.5 if using_cuda else 6.0,
-    ).images[0]
+    prompt = build_random_image_prompt(character, request_text=request_text)
+    with torch.inference_mode():
+        image = pipe(
+            prompt=prompt,
+            negative_prompt=NEGATIVE_IMAGE_PROMPT,
+            width=IMAGE_WIDTH,
+            height=IMAGE_HEIGHT,
+            num_inference_steps=IMAGE_STEPS,
+            guidance_scale=IMAGE_GUIDANCE,
+        ).images[0]
+
+    if torch.cuda.is_available():
+        torch.cuda.empty_cache()
 
     filename = re.sub(r"[^A-Za-z0-9_-]+", "_", character).strip("_") or "girlfriend"
     path = os.path.abspath(os.path.join(GENERATED_DIR, f"{filename}_{int(time.time())}.png"))
     image.save(path)
 
-    CHARACTERS[character]["avatar"] = path
-    CHARACTERS[character]["image_model"] = IMAGE_MODEL_ID
-    CHARACTERS[character]["image_prompt"] = prompt
-    save_characters()
+    if update_profile:
+        CHARACTERS[character]["avatar"] = path
+        CHARACTERS[character]["image_model"] = IMAGE_MODEL_ID
+        CHARACTERS[character]["image_prompt"] = prompt
+        save_characters()
     return path, f"Generated with {IMAGE_MODEL_ID}: {prompt}"
 
 
@@ -648,12 +838,10 @@ Use lots of emojis 😘💕."""
 # Correct format for latest Gradio
 def stream_response(message, history, character):
     if not message or not message.strip():
-        yield history if isinstance(history, list) else []
+        yield normalize_chat_history(history)
         return
 
-    # history is already in dict format from Gradio
-    if not isinstance(history, list):
-        history = []
+    history = normalize_chat_history(history)
     
     # Add user message
     history = history + [{"role": "user", "content": message}]
@@ -663,10 +851,13 @@ def stream_response(message, history, character):
     messages = [SystemMessage(content=system_prompt)]
     for msg in history:
         if isinstance(msg, dict):
+            text = get_message_text(msg)
+            if not text:
+                continue
             if msg.get("role") == "user":
-                messages.append(HumanMessage(content=msg.get("content", "")))
+                messages.append(HumanMessage(content=text))
             elif msg.get("role") == "assistant":
-                messages.append(AIMessage(content=msg.get("content", "")))
+                messages.append(AIMessage(content=text))
 
     response = ""
     history = history + [{"role": "assistant", "content": ""}]
@@ -713,25 +904,28 @@ def handle_image_command(message, character):
 
 
 def handle_user_message(message, history, character):
-    if not isinstance(history, list):
-        history = []
+    history = normalize_chat_history(history)
     
     if is_image_request(message):
-        image_path, status = generate_profile_image(character)
+        history = history + [{"role": "user", "content": message}]
+        yield history + [{"role": "assistant", "content": "Generating your picture now..."}], gr.update(), "Generating image..."
+
+        image_path, status = generate_chat_image(character, message)
         assistant_text = (
             "Sure! I've generated a new image for you. 💕"
             if image_path
             else "I couldn't generate the image right now, but I will keep trying."
         )
-        history = history + [
-            {"role": "user", "content": message},
-            {"role": "assistant", "content": assistant_text},
-        ]
+        history = history + [{"role": "assistant", "content": assistant_text}]
+        if image_path:
+            history.append({"role": "assistant", "content": {"path": image_path}})
         chats[character] = history[:]
         save_chat_history()
-        return history, image_path, status
+        yield history, gr.update(), status
+        return
 
-    return stream_response(message, history, character), gr.update(), gr.update()
+    for updated_history in stream_response(message, history, character):
+        yield updated_history, gr.update(), gr.update()
 
 
 def create_new_girlfriend(name, age, bio, personality, avatar, language):
@@ -752,20 +946,20 @@ def create_new_girlfriend(name, age, bio, personality, avatar, language):
 def generate_image(character):
     return f"🎨 Generating image for {character}..."
 
-def generate_profile_image(character):
+def generate_character_image(character, update_profile=True, request_text=""):
     if not character or character not in CHARACTERS:
         return None, "Select a girlfriend first."
 
     os.makedirs(GENERATED_DIR, exist_ok=True)
+    fallback_reason = ""
     try:
-        return generate_with_image_model(character)
+        return generate_with_image_model(
+            character,
+            request_text=request_text,
+            update_profile=update_profile,
+        )
     except Exception as exc:
         fallback_reason = str(exc)
-        if "local_files_only" in fallback_reason or "Cannot find" in fallback_reason:
-            fallback_reason = (
-                f"{IMAGE_MODEL_ID} is not downloaded locally. To download it inside the app, "
-                "restart with: $env:ALLOW_MODEL_DOWNLOAD='1'; python app.py"
-            )
 
     rng = random.Random(f"{character}-{time.time()}")
     reference_path = get_avatar_path(character) or "luna.png"
@@ -776,7 +970,9 @@ def generate_profile_image(character):
         draw = ImageDraw.Draw(img)
         font = load_font(40, bold=True)
         text = "No reference image available"
-        text_width, text_height = draw.textsize(text, font=font)
+        text_box = draw.textbbox((0, 0), text, font=font)
+        text_width = text_box[2] - text_box[0]
+        text_height = text_box[3] - text_box[1]
         draw.text(
             ((512 - text_width) / 2, (768 - text_height) / 2),
             text,
@@ -817,13 +1013,22 @@ def generate_profile_image(character):
     path = os.path.abspath(os.path.join(GENERATED_DIR, f"{filename}_{int(time.time())}.png"))
     img.convert("RGB").save(path)
 
-    CHARACTERS[character]["avatar"] = path
-    CHARACTERS[character]["image_prompt"] = DEFAULT_IMAGE_PROMPT
-    save_characters()
+    if update_profile:
+        CHARACTERS[character]["avatar"] = path
+        CHARACTERS[character]["image_prompt"] = DEFAULT_IMAGE_PROMPT
+        save_characters()
     return path, (
         "Used luna.png fallback because the real image model is not ready yet. "
         f"{fallback_reason}"
     )
+
+
+def generate_profile_image(character):
+    return generate_character_image(character, update_profile=True)
+
+
+def generate_chat_image(character, request_text=""):
+    return generate_character_image(character, update_profile=False, request_text=request_text)
 
 CUSTOM_CSS = """
 #girlfriend-list .wrap {
@@ -913,7 +1118,7 @@ with gr.Blocks(title="My AI Girlfriends 💕") as demo:
     # Events
     character_list.change(
         lambda c: (
-            chats.get(c, []),
+            normalize_chat_history(chats.get(c, [])),
             get_avatar_path(c),
             f"**{CHARACTERS[c]['name']}**",
             CHARACTERS[c]["bio"],
@@ -955,7 +1160,7 @@ with gr.Blocks(title="My AI Girlfriends 💕") as demo:
     # Initial Load
     demo.load(
         lambda: (
-            chats["Luna"],
+            normalize_chat_history(chats["Luna"]),
             get_avatar_path("Luna"),
             "**Luna**",
             CHARACTERS["Luna"]["bio"],

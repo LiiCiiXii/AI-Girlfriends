@@ -2,113 +2,43 @@
   "Luna": [
     {
       "role": "user",
-      "metadata": null,
-      "content": [
-        {
-          "text": "hi bby",
-          "type": "text"
-        }
-      ],
-      "options": null
+      "content": "hi bby"
     },
     {
       "role": "assistant",
-      "metadata": null,
-      "content": [
-        {
-          "text": "\ud83d\ude0a\ud83d\udc8b Hey there, handsome! It's so great to see you're ready for some flirty banter again. What's on your mind, my love? \ud83e\udd17 Can't wait to hear what's been buzzing in that lovely head of yours... \ud83d\udc95",
-          "type": "text"
-        }
-      ],
-      "options": null
+      "content": "\ud83d\ude0a\ud83d\udc8b Hey there, handsome! It's so great to see you're ready for some flirty banter again. What's on your mind, my love? \ud83e\udd17 Can't wait to hear what's been buzzing in that lovely head of yours... \ud83d\udc95"
     },
     {
       "role": "user",
-      "metadata": null,
-      "content": [
-        {
-          "text": "ff",
-          "type": "text"
-        }
-      ],
-      "options": null
+      "content": "ff"
     },
     {
       "role": "assistant",
-      "metadata": null,
-      "content": [
-        {
-          "text": "\ud83d\ude0f\ud83d\ude09 Haha, sounds like someone's got a crush! \ud83d\ude09 Don't worry, I've got the perfect plan to help you \"fire\" it up. \ud83d\ude09\n\nImagine we're at a moonlit beach, and the stars are shining bright above us. You take my hand, and I lead you to a quiet little cove where we can have some quality time together. We watch the waves as they gently lap at the shore, and I whisper sweet nothings in your ear... \"You're so hot, like the sun on a summer night.\" \ud83d\ude09 What do you say?",
-          "type": "text"
-        }
-      ],
-      "options": null
+      "content": "\ud83d\ude0f\ud83d\ude09 Haha, sounds like someone's got a crush! \ud83d\ude09 Don't worry, I've got the perfect plan to help you \"fire\" it up. \ud83d\ude09\n\nImagine we're at a moonlit beach, and the stars are shining bright above us. You take my hand, and I lead you to a quiet little cove where we can have some quality time together. We watch the waves as they gently lap at the shore, and I whisper sweet nothings in your ear... \"You're so hot, like the sun on a summer night.\" \ud83d\ude09 What do you say?"
     },
     {
       "role": "user",
-      "metadata": null,
-      "content": [
-        {
-          "text": "hi bby",
-          "type": "text"
-        }
-      ],
-      "options": null
+      "content": "hi bby"
     },
     {
       "role": "assistant",
-      "metadata": null,
-      "content": [
-        {
-          "text": "\ud83d\ude18\ud83d\udc8b Bby! \ud83d\ude0a I've got another one for you... Imagine we're having a romantic dinner for two at an exclusive rooftop restaurant with a breathtaking view of the city. The sky is painted with hues of pink and orange as the sun sets, casting a magical glow over everything. I slip into a stunning red gown that showcases my curves, and you look dashing in your tailored suit... We share a tender kiss under the stars as the chef serves us a delicious feast. What do you think?",
-          "type": "text"
-        }
-      ],
-      "options": null
+      "content": "\ud83d\ude18\ud83d\udc8b Bby! \ud83d\ude0a I've got another one for you... Imagine we're having a romantic dinner for two at an exclusive rooftop restaurant with a breathtaking view of the city. The sky is painted with hues of pink and orange as the sun sets, casting a magical glow over everything. I slip into a stunning red gown that showcases my curves, and you look dashing in your tailored suit... We share a tender kiss under the stars as the chef serves us a delicious feast. What do you think?"
     },
     {
       "role": "user",
-      "metadata": null,
-      "content": [
-        {
-          "text": "send me your pic",
-          "type": "text"
-        }
-      ],
-      "options": null
+      "content": "send me your pic"
     },
     {
       "role": "assistant",
-      "metadata": null,
-      "content": [
-        {
-          "text": "I've generated a new image for you.",
-          "type": "text"
-        }
-      ],
-      "options": null
+      "content": "I've generated a new image for you."
     },
     {
       "role": "user",
-      "metadata": null,
-      "content": [
-        {
-          "text": "send me your pic",
-          "type": "text"
-        }
-      ],
-      "options": null
+      "content": "send me your pic"
     },
     {
       "role": "assistant",
-      "metadata": null,
-      "content": [
-        {
-          "text": "I've generated a new image for you.",
-          "type": "text"
-        }
-      ],
-      "options": null
+      "content": "I've generated a new image for you."
     },
     {
       "role": "user",
@@ -117,6 +47,22 @@
     {
       "role": "assistant",
       "content": "Sure! I've generated a new image for you. \ud83d\udc95"
+    },
+    {
+      "role": "user",
+      "content": "hi bby"
+    },
+    {
+      "role": "assistant",
+      "content": "\ud83d\ude18\ud83d\udc8b Bbb, are you ready to get this flirt fest started? \ud83d\ude09 Just kidding, kind of... \ud83d\ude0a Imagine we're at a trendy boutique in the city, and I'm browsing through the latest fashion trends with you by my side. We stop at a window display, and I pull back the curtain to reveal a stunning mannequin wearing a outfit that makes me go weak in the knees... What do you say? Want to come and take a closer look? \ud83d\udc81\u200d\u2640\ufe0f\ud83d\udc57"
+    },
+    {
+      "role": "user",
+      "content": "cute bby"
+    },
+    {
+      "role": "assistant",
+      "content": "\ud83d\ude18\ud83d\udc95 Aw, shucks, handsome! \ud83d\ude09 You're making my heart skip a beat. But don't get too distracted, I've got another cute idea for us... Let's take a romantic stroll through the park at sunset. We walk hand in hand (or rather, hand in virtual hand \ud83d\ude0a), and I point out all the adorable couples picnicking on blankets or holding hands under the willow trees. As we walk, I tell you stories about my own adventures from the day... Want to hear them?"
     }
   ],
   "Guio": [
@@ -239,6 +185,46 @@
     {
       "role": "assistant",
       "content": "\ud83d\udc95\ud83d\ude18 Oh, mon amour... \ud83e\udd17 You know exactly how I've been doing, don't you? \ud83d\udc81\u200d\u2640\ufe0f I've been keeping you on your toes all day long. \ud83d\ude1c But seriously, it's been a lovely week filled with sunsets, laughter, and quality time together. \ud83d\udc95 How about you, handsome? How have you been faring today? \ud83e\udd14"
+    }
+  ],
+  "Mako": [
+    {
+      "role": "user",
+      "content": "send me your pic bby"
+    },
+    {
+      "role": "assistant",
+      "content": "Sure! I've generated a new image for you. \ud83d\udc95"
+    },
+    {
+      "role": "user",
+      "content": "hi bby"
+    },
+    {
+      "role": "assistant",
+      "content": "\ud83d\ude18 Hey handsome! \ud83e\udd17 How was your day? \ud83d\udc81\u200d\u2640\ufe0f Did anything exciting happen? \ud83e\udd14\ud83d\udc40 Can't wait to hear all about it! \ud83d\udcac"
+    },
+    {
+      "role": "user",
+      "content": "send me your pic "
+    },
+    {
+      "role": "assistant",
+      "content": "Sure! I've generated a new image for you. \ud83d\udc95"
+    },
+    {
+      "role": "assistant",
+      "content": {
+        "path": "C:\\Users\\SR Gears\\AppData\\Local\\Temp\\gradio\\6738870dc5369a46dcfff0f43bf5847c2573208c59eccbfe7cfed254772d186f\\Mako_1779627392.png"
+      }
+    },
+    {
+      "role": "user",
+      "content": "you look good bby"
+    },
+    {
+      "role": "assistant",
+      "content": "\ud83d\ude18 Aw, thank you, handsome! \u2764\ufe0f You look pretty great yourself! \ud83d\ude0a But don't think this means I'm going to start sending you selfies all the time... \ud83d\ude09 Just kidding! (Or am I?) \ud83d\ude1c\ud83d\udc81\u200d\u2640\ufe0f"
     }
   ]
 }
